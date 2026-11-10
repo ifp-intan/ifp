@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FINANCE RUN: SQUAD ESCAPE — Game Edukasi IPS Literasi Keuangan SMP</title>
+  <meta name="description" content="Endless Runner Quiz Multi-Touch Simultan 2-4 Tim Siswa SMP Kelas 9 Mata Pelajaran IPS Literasi Keuangan.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃</text></svg>">
+
+  <style>
+    /* ══════════════════════════════════════════════════════════════════════
+       FINANCE RUN: CLEAN BRIGHT / MODERN EDU THEME (LIGHT MODE ☀️)
+       Art Direction: Fresh, Clean, High-Contrast Modern Educational Runner
+       ══════════════════════════════════════════════════════════════════════ */
+    :root {
+      --bg-main: #f8fafc;
+      --bg-panel: #ffffff;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-accent: #0284c7;
+
+      --team-1: #e11d48; /* Merah Rose */
+      --team-2: #0284c7; /* Biru Langit */
+      --team-3: #10b981; /* Hijau Zamrud */
+      --team-4: #d97706; /* Oranye Amber */
+
+      --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.06);
+      --shadow-elevated: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: var(--font-body);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .screen {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .screen.active {
+      display: flex;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       1. SETUP SCREEN: CLEAN BRIGHT THEME
+       ══════════════════════════════════════════════════════════════════════ */
+    #setup-screen {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      position: relative;
+      overflow-y: auto;
+      padding: 24px;
+      z-index: 10;
+    }
+
+    .setup-card {
+      position: relative;
+      z-index: 2;
+      width: min(960px, 95vw);
+      background: var(--bg-card);
+      border: 2px solid var(--border-card);
+      border-radius: 24px;
+      padding: clamp(24px, 4vw, 40px);
+      box-shadow: var(--shadow-elevated);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .setup-header { text-align: center; }
+    .setup-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      color: var(--text-primary);
+    }
+    .setup-subtitle {
+      font-size: clamp(0.9rem, 1.3vw, 1.1rem);
+      color: var(--text-secondary);
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .setup-section-label {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text-accent);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .tactical-btn {
+      background: #f8fafc;
+      border: 2px solid var(--border-card);
+      border-radius: 14px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .tactical-btn span { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-secondary); }
+    .tactical-btn:hover { border-color: var(--text-accent); background: #f0f9ff; transform: translateY(-2px); }
+    .tactical-btn.active { border-color: var(--text-accent); background: #e0f2fe; color: var(--text-accent); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2); }
+
+    .squadrons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .squadron-slot { background: #f8fafc; border: 2px solid; border-radius: 14px; padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+    .squadron-slot-header { display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800; }
+    .squadron-input { background: #ffffff; border: 1.5px solid var(--border-card); border-radius: 8px; padding: 8px 12px; color: var(--text-primary); font-family: var(--font-body); font-weight: 700; font-size: 0.95rem; outline: none; }
+    .squadron-input:focus { border-color: var(--text-accent); }
+
+    .launch-btn {
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+      color: #ffffff; border: none; border-radius: 16px; padding: 18px 32px;
+      font-family: var(--font-heading); font-size: clamp(1.2rem, 2.2vw, 1.6rem); font-weight: 900;
+      letter-spacing: 1px; cursor: pointer; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.35);
+      transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 8px;
+    }
+    .launch-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(2, 132, 199, 0.45); }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       2. IN-GAME RUNNER SCREEN: LIGHT MODE ARENA
+       ══════════════════════════════════════════════════════════════════════ */
+    #game-screen { flex-direction: column; background: #f8fafc; }
+
+    .top-avionics {
+      height: 64px; background: #ffffff; border-bottom: 2px solid var(--border-card);
+      padding: 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03); flex-shrink: 0; z-index: 20;
+    }
+    .telemetry-left { display: flex; align-items: center; gap: 12px; }
+    .sector-badge { background: #e0f2fe; border: 1.5px solid var(--text-accent); border-radius: 10px; padding: 6px 14px; font-family: var(--font-mono); font-size: 0.9rem; font-weight: 800; color: var(--text-accent); }
+
+    .telemetry-center { display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 0.9rem; font-weight: 800; color: var(--text-primary); }
+
+    .telemetry-right { display: flex; align-items: center; gap: 10px; }
+    .hud-stat-box { background: #f1f5f9; border: 1.5px solid var(--border-card); border-radius: 10px; padding: 6px 12px; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 800; }
+    .hud-icon-btn { width: 40px; height: 40px; border-radius: 10px; background: #f1f5f9; border: 1.5px solid var(--border-card); color: var(--text-secondary); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .hud-icon-btn:hover { border-color: var(--text-accent); color: var(--text-accent); background: #e0f2fe; }
+
+    .dogfight-viewport { flex: 1; position: relative; overflow: hidden; min-height: 280px; }
+    #combatCanvas { width: 100%; height: 100%; display: block; background: #f1f5f9; }
+
+    .flight-alert { position: absolute; top: 22%; left: 50%; transform: translate(-50%, -50%) scale(0.7); background: #ffffff; border: 2.5px solid var(--text-accent); border-radius: 20px; padding: 18px 40px; text-align: center; z-index: 30; opacity: 0; pointer-events: none; transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: var(--shadow-elevated); }
+    .flight-alert.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .flight-alert-title { font-family: var(--font-heading); font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 900; color: var(--text-primary); }
+    .flight-alert-sub { font-size: 1rem; color: var(--text-secondary); margin-top: 2px; font-weight: 700; }
+
+    .cockpit-dock { min-height: 380px; height: 45vh; max-height: 480px; background: #ffffff; border-top: 2px solid var(--border-card); display: grid; gap: 10px; padding: 10px 12px; flex-shrink: 0; z-index: 20; box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05); }
+    .cockpit-dock.teams-2 { grid-template-columns: repeat(2, 1fr); }
+    .cockpit-dock.teams-3 { grid-template-columns: repeat(3, 1fr); }
+    .cockpit-dock.teams-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .station-panel { background: #ffffff; border: 2px solid var(--border-card); border-radius: 16px; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; position: relative; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: var(--shadow-soft); }
+    .station-panel.p0 { border-color: var(--team-1); }
+    .station-panel.p1 { border-color: var(--team-2); }
+    .station-panel.p2 { border-color: var(--team-3); }
+    .station-panel.p3 { border-color: var(--team-4); }
+
+    .station-panel.flash-fire { animation: pulseFire 0.45s ease; }
+    .station-panel.flash-miss { animation: pulseMiss 0.45s ease; }
+    @keyframes pulseFire { 0%, 100% { background: #ffffff; } 50% { background: #d1fae5; } }
+    @keyframes pulseMiss { 0%, 100% { background: #ffffff; } 50% { background: #ffe4e6; } }
+
+    .cockpit-header { padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1.5px solid var(--border-card); background: #f8fafc; }
+    .squadron-tag { display: flex; align-items: center; gap: 8px; }
+    .squadron-name { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 800; }
+    .cockpit-stats { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 0.82rem; }
+    .stats-score { font-weight: 800; }
+    .stats-streak { color: #d97706; font-weight: 800; }
+
+    .radar-timer-track { height: 5px; background: #e2e8f0; width: 100%; overflow: hidden; }
+    .radar-timer-fill { height: 100%; width: 100%; background: var(--text-accent); transition: width 0.1s linear, background-color 0.25s ease; }
+
+    .cockpit-deck { padding: 10px 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; overflow: hidden; }
+    .avionics-meta-row { display: flex; align-items: center; justify-content: space-between; }
+    .topic-badge { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: var(--text-accent); text-transform: uppercase; }
+    .weapon-ready-tag { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: #10b981; }
+
+    .cockpit-question { font-size: clamp(0.72rem, 0.95vw, 0.85rem); font-weight: 700; line-height: 1.35; color: var(--text-primary); flex: 1; display: flex; align-items: flex-start; overflow-y: auto; max-height: 120px; padding-right: 2px; }
+
+    .fire-options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex-shrink: 0; }
+    .fire-btn {
+      background: #f8fafc; border: 1.5px solid var(--border-card); border-radius: 10px;
+      padding: 8px 10px; color: var(--text-primary); font-family: var(--font-body); font-size: clamp(0.68rem, 0.88vw, 0.8rem);
+      font-weight: 700; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px;
+      transition: all 0.15s ease; touch-action: manipulation; min-height: 52px; line-height: 1.25;
+    }
+    .fire-btn:hover { background: #e0f2fe; border-color: var(--text-accent); color: var(--text-accent); }
+    .fire-btn .fire-key { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; background: #ffffff; border: 1px solid var(--border-card); border-radius: 6px; padding: 3px 6px; flex-shrink: 0; }
+    .fire-btn.locked { pointer-events: none; opacity: 0.6; }
+    .fire-btn.hit { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+    .fire-btn.miss { background: #ffe4e6 !important; border-color: #e11d48 !important; color: #9f1239 !important; }
+
+    #results-screen { flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); position: relative; overflow-y: auto; padding: 24px; z-index: 10; }
+    .results-card { background: #ffffff; border: 2px solid var(--border-card); border-radius: 24px; padding: clamp(24px, 4vw, 42px); width: min(960px, 94vw); box-shadow: var(--shadow-elevated); display: flex; flex-direction: column; gap: 22px; text-align: center; }
+    .results-title { font-family: var(--font-heading); font-size: clamp(2.2rem, 4.5vw, 3.6rem); font-weight: 900; color: var(--text-primary); }
+    .results-sub { color: var(--text-secondary); font-size: 1.05rem; font-weight: 600; }
+
+    .podium-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 10px; }
+    .podium-card { background: #f8fafc; border: 2px solid var(--border-card); border-radius: 18px; padding: 20px 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: var(--shadow-soft); position: relative; }
+    .podium-card.ace { transform: scale(1.04); background: #fef3c7; border-color: #d97706; }
+    .podium-card.ace::after { content: "TOP CHAMPION"; position: absolute; top: -12px; background: #d97706; color: #ffffff; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 900; letter-spacing: 1px; padding: 3px 12px; border-radius: 6px; }
+    .podium-rank { font-size: 2.2rem; }
+    .podium-name { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; }
+    .podium-score { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 900; color: var(--text-accent); }
+    .podium-stats-box { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; text-align: left; width: 100%; background: #ffffff; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-card); margin-top: 4px; }
+
+    .play-again-btn { background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%); color: #ffffff; border: none; border-radius: 16px; padding: 16px 32px; font-family: var(--font-heading); font-size: 1.3rem; font-weight: 900; letter-spacing: 1px; cursor: pointer; align-self: center; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.35); transition: all 0.2s; }
+    .play-again-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(2, 132, 199, 0.45); }
+  </style>
+</head>
+<body>
+
+  <!-- SETUP SCREEN -->
+  <div id="setup-screen" class="screen active">
+    <div class="setup-card">
+      <div class="setup-header">
+        <h1 class="setup-title">🏃 FINANCE RUN: SQUAD ESCAPE</h1>
+        <p class="setup-subtitle">Endless Runner Quiz Multi-Touch Simultan — Kuis IPS Literasi Keuangan Kelas 9 SMP (40 Soal HOTS)</p>
+      </div>
+
+      <div>
+        <div class="setup-section-label"><span>👥</span> JUMLAH SQUAD RUNNER (2 - 4 TIM SIMULTAN)</div>
+        <div class="grid-3col">
+          <button type="button" class="tactical-btn select-btn" data-teams="2">2 SQUAD<span>DUO RUNNERS</span></button>
+          <button type="button" class="tactical-btn select-btn" data-teams="3">3 SQUAD<span>TRIO SQUAD</span></button>
+          <button type="button" class="tactical-btn select-btn active" data-teams="4">4 SQUAD<span>FULL SQUAD RACE</span></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="setup-section-label"><span>🎯</span> TINGKAT KECEPATAN &amp; RINTANGAN</div>
+        <div class="grid-3col">
+          <button type="button" class="tactical-btn diff-btn" data-diff="easy">
+            <span style="color: #10b981;">PEMULA (MUDAH)</span>
+            <span>Timer 30s • Lari Santai • 3 Nyawa</span>
+          </button>
+          <button type="button" class="tactical-btn diff-btn active" data-diff="normal">
+            <span style="color: #0284c7;">STANDARD (SEDANG)</span>
+            <span>Timer 20s • Lari Cepat • 3 Nyawa</span>
+          </button>
+          <button type="button" class="tactical-btn diff-btn" data-diff="hard">
+            <span style="color: #e11d48;">MASTER (SULIT)</span>
+            <span>Timer 15s • Sprint Kencang • 3 Nyawa</span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="setup-section-label"><span>🏷️</span> NAMA TIM SQUAD RUNNER</div>
+        <div id="squadronsList" class="squadrons-grid"></div>
+      </div>
+
+      <button type="button" id="btnLaunchFlight" class="launch-btn">
+        <span>🏃 MULAI PERTANDINGAN FINANCE RUN</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- IN-GAME RUNNER SCREEN -->
+  <div id="game-screen" class="screen">
+    <header class="top-avionics">
+      <div class="telemetry-left">
+        <div class="sector-badge" id="hudSectorBadge">DISTANSI: 0 METER</div>
+      </div>
+
+      <div class="telemetry-center">
+        <span>🏃 FINANSIAL RUNNER ARENA</span>
+      </div>
+
+      <div class="telemetry-right">
+        <div class="hud-stat-box" id="hudTopScore">LEADER: 0 PTS</div>
+        <button type="button" id="btnToggleAudio" class="hud-icon-btn" title="Toggle Audio">🔊</button>
+        <button type="button" id="btnToggleFullscreen" class="hud-icon-btn" title="Fullscreen">⛶</button>
+      </div>
+    </header>
+
+    <main class="dogfight-viewport">
+      <canvas id="combatCanvas"></canvas>
+      <div id="flightAlert" class="flight-alert">
+        <div id="flightAlertTitle" class="flight-alert-title">RINTANGAN MENDEKAT!</div>
+        <div id="flightAlertSub" class="flight-alert-sub">Pilih jawaban aksi yang tepat untuk melewati rintangan!</div>
+      </div>
+    </main>
+
+    <footer id="cockpitDock" class="cockpit-dock teams-4"></footer>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="results-screen" class="screen">
+    <div class="results-card">
+      <div>
+        <h1 id="resultsTitle" class="results-title">🏆 FINISH LINE REACHED!</h1>
+        <p id="resultsSubtitle" class="results-sub">Seluruh tim berhasil menyelesaikan tantangan Literasi Keuangan.</p>
+      </div>
+
+      <div id="podiumGrid" class="podium-grid"></div>
+
+      <button type="button" id="btnPlayAgain" class="play-again-btn">
+        <span>🔄 MAINKAN LAGI</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       1. QUESTION BANK — 40 SOAL IPS LITERASI KEUANGAN SMP KELAS 9
+       ============================================================ */
+    const QUESTIONS_BANK = [
+      {
+        question: "Andi menerima uang saku bulanan. Menurut aturan pembagian anggaran rasional 50-30-20, porsi 50% idealnya dialokasikan untuk...",
+        options: [
+          "A. Lompat (Jump) 🦘 -> Kebutuhan Pokok & Esensial",
+          "B. Slide (Meluncur) 🛹 -> Keinginan & Hiburan",
+          "C. Double Jump 🚀 -> Tabungan & Dana Darurat",
+          "D. Roll (Berguling) 🌀 -> Belanja Barang Mewah"
+        ],
+        answer: 0,
+        topic: "Anggaran 50-30-20"
+      },
+      {
+        question: "Ketika seseorang ditawari investasi online yang menjanjikan keuntungan pasti 50% tiap bulan tanpa risiko, aksi evaluasi finansial terbaik menurut prinsip OJK adalah...",
+        options: [
+          "A. Lompat 🦘 -> Langsung mentransfer modal",
+          "B. Slide 🛹 -> Menolak karena terindikasi Skema Ponzi",
+          "C. Double Jump 🚀 -> Merekrut 5 teman baru",
+          "D. Roll 🌀 -> Meminjam uang dari pinjol"
+        ],
+        answer: 1,
+        topic: "OJK & Investasi Legal"
+      },
+      {
+        question: "Masyarakat menggunakan QRIS untuk pembayaran digital di toko. Keuntungan utama transaksi QRIS bagi pembeli dan penjual adalah...",
+        options: [
+          "A. Lompat 🦘 -> Menghilangkan pajak negara",
+          "B. Slide 🛹 -> Transaksi praktis, higienis & tercatat otomatis",
+          "C. Double Jump 🚀 -> Bebas biaya selamanya",
+          "D. Roll 🌀 -> Bebas dari jaringan internet"
+        ],
+        answer: 1,
+        topic: "Pembayaran Digital QRIS"
+      },
+      {
+        question: "Rina menabung uangnya di bank terpercaya yang dijamin oleh Lembaga Penjamin Simpanan (LPS). Fungsi utama LPS adalah...",
+        options: [
+          "A. Lompat 🦘 -> Menetapkan harga barang di pasar",
+          "B. Slide 🛹 -> Membayar pajak penghasilan",
+          "C. Double Jump 🚀 -> Menjamin simpanan nasabah di bank",
+          "D. Roll 🌀 -> Mencetak uang kertas rupiah"
+        ],
+        answer: 2,
+        topic: "Perbankan & LPS"
+      },
+      {
+        question: "Nilai nominal uang tetap, tetapi harga barang naik seiring waktu sehingga daya beli uang menurun. Fenomena ekonomi ini disebut...",
+        options: [
+          "A. Lompat 🦘 -> Deflasi",
+          "B. Slide 🛹 -> Devaluasi",
+          "C. Double Jump 🚀 -> Inflasi",
+          "D. Roll 🌀 -> Revaluasi"
+        ],
+        answer: 2,
+        topic: "Inflasi & Daya Beli"
+      },
+      {
+        question: "Saat memverifikasi keaslian uang Rupiah kertas TE 2022 dengan meraba bagian pahlawan dan kode tunanetra, teknik cetak timbul yang terasa kasar dinamakan...",
+        options: [
+          "A. Lompat 🦘 -> Cetak Intaglio",
+          "B. Slide 🛹 -> Cetak Offset",
+          "C. Double Jump 🚀 -> Cetak Watermark",
+          "D. Roll 🌀 -> Cetak Digital"
+        ],
+        answer: 0,
+        topic: "Ciri Keaslian Rupiah"
+      },
+      {
+        question: "Seseorang memilih memegang uang tunai untuk mengantisipasi biaya medis mendadak. Menurut J.M. Keynes, motif ini adalah...",
+        options: [
+          "A. Lompat 🦘 -> Motif Transaksi",
+          "B. Slide 🛹 -> Motif Berjaga-jaga",
+          "C. Double Jump 🚀 -> Motif Spekulasi",
+          "D. Roll 🌀 -> Motif Investasi"
+        ],
+        answer: 1,
+        topic: "Motif Memegang Uang"
+      },
+      {
+        question: "Sebelum membeli barang, Budi selalu mempertimbangkan apakah barang tersebut benar-benar dibutuhkan atau hanya keinginan sesaat. Sikap Budi mencerminkan...",
+        options: [
+          "A. Lompat 🦘 -> Perilaku Konsumtif",
+          "B. Slide 🛹 -> Perilaku Hemat & Literat",
+          "C. Double Jump 🚀 -> Perilaku Spekulatif",
+          "D. Roll 🌀 -> Perilaku Pemborosan"
+        ],
+        answer: 1,
+        topic: "Literasi Finansial"
+      },
+      {
+        question: "Dalam prinsip 2L dari OJK untuk mengecek keamanan suatu penawaran investasi, 2L merupakan singkatan dari...",
+        options: [
+          "A. Lompat 🦘 -> Luas & Bermanfaat",
+          "B. Slide 🛹 -> Laris & Menguntungkan",
+          "C. Double Jump 🚀 -> Legal & Logis",
+          "D. Roll 🌀 -> Lancar & Aman"
+        ],
+        answer: 2,
+        topic: "Prinsip 2L OJK"
+      },
+      {
+        question: "Uang kertas dan uang logam yang diterbitkan oleh Bank Indonesia sebagai alat pembayaran sah (legal tender) disebut...",
+        options: [
+          "A. Lompat 🦘 -> Uang Kartal",
+          "B. Slide 🛹 -> Uang Giral",
+          "C. Double Jump 🚀 -> Uang Elektronik",
+          "D. Roll 🌀 -> Uang Komoditas"
+        ],
+        answer: 0,
+        topic: "Jenis Uang"
+      }
+    ];
+
+    /* ============================================================
+       2. PROCEDURAL SOUND SYNTHESIZER (WEB AUDIO API)
+       ============================================================ */
+    class RunnerAudio {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      _init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playAction(actionType) {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        if (actionType === 'jump') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(300, now);
+          osc.frequency.exponentialRampToValueAtTime(700, now + 0.18);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        } else if (actionType === 'slide') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.linearRampToValueAtTime(200, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        } else if (actionType === 'doubleJump') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(500, now);
+          osc.frequency.exponentialRampToValueAtTime(1000, now + 0.22);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+        } else {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(250, now);
+          osc.frequency.linearRampToValueAtTime(400, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        }
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+
+      playCorrect() {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(783.99, now + 0.09);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      }
+
+      playWrong() {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.setValueAtTime(110, now + 0.1);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+    }
+
+    /* ============================================================
+       3. ENDLESS RUNNER CANVAS ENGINE (LIGHT MODE)
+       ============================================================ */
+    class RunnerEngine {
+      constructor(canvas, game) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.game = game;
+
+        this.width = 0;
+        this.height = 0;
+        this.distance = 0;
+
+        this.runners = [];
+        this.obstacles = [];
+        this.particles = [];
+        this.hudDamageTags = [];
+
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+      }
+
+      resize() {
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.width = rect.width || 1200;
+        this.height = rect.height || 400;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+        this.repositionRunners();
+      }
+
+      setupRunners(teamCount, teamNames) {
+        this.runners = [];
+        const colors = ['#e11d48', '#0284c7', '#10b981', '#d97706'];
+
+        for (let i = 0; i < teamCount; i++) {
+          this.runners.push({
+            teamIdx: i,
+            name: (teamNames && teamNames[i]) || `Squad ${i + 1}`,
+            color: colors[i],
+            x: 80 + i * 40,
+            y: 0,
+            vy: 0,
+            groundY: 0,
+            isJumping: false,
+            isSliding: false,
+            lives: 3,
+            stumbleTimer: 0,
+            actionState: 'run'
+          });
+        }
+        this.repositionRunners();
+      }
+
+      repositionRunners() {
+        if (!this.runners) return;
+        const groundY = this.height - 50;
+        this.runners.forEach((r) => {
+          r.groundY = groundY;
+          r.y = groundY;
+        });
+      }
+
+      triggerAction(teamIdx, actionIdx) {
+        const runner = this.runners[teamIdx];
+        if (!runner || runner.lives <= 0) return;
+
+        if (actionIdx === 0) { // Jump
+          runner.vy = -12;
+          runner.isJumping = true;
+          runner.actionState = 'jump';
+          this.game.audio.playAction('jump');
+        } else if (actionIdx === 1) { // Slide
+          runner.isSliding = true;
+          runner.actionState = 'slide';
+          this.game.audio.playAction('slide');
+          setTimeout(() => { if (runner.actionState === 'slide') runner.actionState = 'run'; }, 800);
+        } else if (actionIdx === 2) { // Double Jump
+          runner.vy = -16;
+          runner.isJumping = true;
+          runner.actionState = 'jump';
+          this.game.audio.playAction('doubleJump');
+        } else { // Roll
+          runner.isSliding = true;
+          runner.actionState = 'roll';
+          this.game.audio.playAction('roll');
+          setTimeout(() => { if (runner.actionState === 'roll') runner.actionState = 'run'; }, 800);
+        }
+      }
+
+      stumbleRunner(teamIdx) {
+        const runner = this.runners[teamIdx];
+        if (!runner) return;
+        runner.lives = Math.max(0, runner.lives - 1);
+        runner.stumbleTimer = 1.0;
+        runner.actionState = 'stumble';
+        this.addDamageTag(runner.x, runner.y - 30, "-1 NYAWA!", "#e11d48", 1.2);
+      }
+
+      addDamageTag(x, y, text, color, scale = 1.0) {
+        this.hudDamageTags.push({
+          x, y, text, color, scale, alpha: 1, vy: -1.5
+        });
+      }
+
+      update(dt) {
+        const timeScale = Math.min(1.8, Math.max(0.5, (dt || 0.016) * 60));
+        this.distance += 0.8 * timeScale;
+
+        const groundY = this.height - 50;
+
+        this.runners.forEach(r => {
+          if (r.isJumping) {
+            r.y += r.vy * timeScale;
+            r.vy += 0.7 * timeScale;
+            if (r.y >= groundY) {
+              r.y = groundY;
+              r.isJumping = false;
+              r.actionState = 'run';
+            }
+          }
+
+          if (r.stumbleTimer > 0) {
+            r.stumbleTimer -= 0.02 * timeScale;
+            if (r.stumbleTimer <= 0) r.actionState = 'run';
+          }
+        });
+
+        for (let i = this.hudDamageTags.length - 1; i >= 0; i--) {
+          const dtg = this.hudDamageTags[i];
+          dtg.y += dtg.vy * timeScale;
+          dtg.alpha -= 0.016 * timeScale;
+          if (dtg.alpha <= 0) this.hudDamageTags.splice(i, 1);
+        }
+      }
+
+      draw() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+
+        // Sky Background
+        this.ctx.fillStyle = '#f1f5f9';
+        this.ctx.fillRect(0, 0, this.width, this.height);
+
+        // Ground Track
+        const groundY = this.height - 50;
+        this.ctx.fillStyle = '#cbd5e1';
+        this.ctx.fillRect(0, groundY, this.width, 50);
+
+        this.ctx.fillStyle = '#0284c7';
+        this.ctx.fillRect(0, groundY, this.width, 4);
+
+        // Moving Track Dashes
+        this.ctx.strokeStyle = '#ffffff';
+        this.ctx.lineWidth = 3;
+        this.ctx.setLineDash([20, 20]);
+        this.ctx.beginPath();
+        this.ctx.moveTo(- (this.distance * 4) % 40, groundY + 25);
+        this.ctx.lineTo(this.width, groundY + 25);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
+
+        // Draw Runners
+        this.runners.forEach(r => {
+          this.ctx.save();
+          this.ctx.translate(r.x, r.y);
+
+          // Runner Body
+          this.ctx.fillStyle = r.color;
+          if (r.actionState === 'slide' || r.actionState === 'roll') {
+            this.ctx.fillRect(-15, -15, 30, 15);
+          } else {
+            this.ctx.fillRect(-12, -35, 24, 35);
+            this.ctx.beginPath();
+            this.ctx.arc(0, -42, 8, 0, Math.PI * 2);
+            this.ctx.fill();
+          }
+
+          // Runner Name
+          this.ctx.font = 'bold 10px Plus Jakarta Sans, sans-serif';
+          this.ctx.fillStyle = '#0f172a';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText(`${r.name} (${'❤️'.repeat(r.lives)})`, 0, -52);
+
+          this.ctx.restore();
+        });
+
+        // Damage Tags
+        this.hudDamageTags.forEach(dtg => {
+          this.ctx.save();
+          this.ctx.font = `bold ${Math.round(14 * dtg.scale)}px 'Outfit', sans-serif`;
+          this.ctx.fillStyle = dtg.color;
+          this.ctx.globalAlpha = dtg.alpha;
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText(dtg.text, dtg.x, dtg.y);
+          this.ctx.restore();
+        });
+      }
+    }
+
+    /* ============================================================
+       4. COCKPIT QUIZ STATIONS (2-4 TEAMS SIMULTANEOUS)
+       ============================================================ */
+    class CockpitQuizStation {
+      constructor(container, game) {
+        this.container = container;
+        this.game = game;
+        this.stations = [];
+      }
+
+      init(numTeams, teamNames, timerSeconds) {
+        this.container.innerHTML = '';
+        this.container.className = `cockpit-dock teams-${numTeams}`;
+        this.stations = [];
+
+        const defaultNames = ['SQUAD ROSE', 'SQUAD SKY', 'SQUAD EMERALD', 'SQUAD AMBER'];
+        const colors = ['#e11d48', '#0284c7', '#10b981', '#d97706'];
+
+        for (let i = 0; i < numTeams; i++) {
+          const name = (teamNames && teamNames[i]) || defaultNames[i];
+          const panel = document.createElement('div');
+          panel.className = `station-panel p${i}`;
+
+          panel.innerHTML = `
+            <div class="cockpit-header">
+              <div class="squadron-tag">
+                <span class="squadron-name" style="color: ${colors[i]};">${name}</span>
+              </div>
+              <div class="cockpit-stats">
+                <span class="stats-streak" id="streak-${i}">🔥 0x</span>
+                <span class="stats-score" id="score-${i}" style="color: ${colors[i]};">0 PTS</span>
+              </div>
+            </div>
+            <div class="radar-timer-track">
+              <div class="radar-timer-fill" id="timerBar-${i}" style="width: 100%;"></div>
+            </div>
+            <div class="cockpit-deck">
+              <div class="avionics-meta-row">
+                <span class="topic-badge" id="topic-${i}">IPS LITERASI KEUANGAN</span>
+                <span class="weapon-ready-tag" id="weaponStatus-${i}">STATUS: RUNNING</span>
+              </div>
+              <div class="cockpit-question" id="quest-${i}">Menyiapkan lintasan kuis...</div>
+              <div class="fire-options-grid" id="optGrid-${i}"></div>
+            </div>
+          `;
+
+          this.container.appendChild(panel);
+
+          const stationData = {
+            idx: i,
+            el: panel,
+            name,
+            color: colors[i],
+            currentQuestion: null,
+            timerSeconds,
+            timeLeft: timerSeconds,
+            timerInterval: null,
+            answered: 0,
+            correct: 0,
+            streak: 0,
+            locked: false
+          };
+
+          this.stations.push(stationData);
+          this.loadNextTargetQuestion(stationData);
+        }
+      }
+
+      loadNextTargetQuestion(st) {
+        if (this.game.isGameOver) return;
+        st.locked = false;
+        st.timeLeft = st.timerSeconds;
+
+        const qIdx = Math.floor(Math.random() * QUESTIONS_BANK.length);
+        st.currentQuestion = QUESTIONS_BANK[qIdx];
+
+        const topicEl = document.getElementById(`topic-${st.idx}`);
+        const questEl = document.getElementById(`quest-${st.idx}`);
+        const optGrid = document.getElementById(`optGrid-${st.idx}`);
+        const timerBar = document.getElementById(`timerBar-${st.idx}`);
+
+        if (topicEl) topicEl.textContent = st.currentQuestion.topic || 'IPS LITERASI KEUANGAN';
+        if (questEl) questEl.textContent = st.currentQuestion.question;
+
+        if (timerBar) {
+          timerBar.style.width = '100%';
+          timerBar.style.backgroundColor = '#0284c7';
+        }
+
+        if (optGrid) {
+          optGrid.innerHTML = '';
+          st.currentQuestion.options.forEach((optText, optIdx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'fire-btn';
+            btn.innerHTML = `<span>${optText}</span>`;
+
+            const triggerFire = (e) => {
+              e.preventDefault();
+              if (st.locked || this.game.isGameOver) return;
+              this.handleAnswerFire(st, optIdx, btn);
+            };
+
+            btn.addEventListener('touchstart', triggerFire, { passive: false });
+            btn.addEventListener('click', triggerFire);
+
+            optGrid.appendChild(btn);
+          });
+        }
+
+        this._startTimer(st);
+      }
+
+      _startTimer(st) {
+        if (st.timerInterval) clearInterval(st.timerInterval);
+
+        st.timerInterval = setInterval(() => {
+          if (this.game.isGameOver) {
+            clearInterval(st.timerInterval);
+            return;
+          }
+
+          st.timeLeft -= 0.1;
+          const pct = Math.max(0, (st.timeLeft / st.timerSeconds) * 100);
+          const timerBar = document.getElementById(`timerBar-${st.idx}`);
+          if (timerBar) {
+            timerBar.style.width = `${pct}%`;
+            if (pct < 28) timerBar.style.backgroundColor = '#e11d48';
+            else if (pct < 55) timerBar.style.backgroundColor = '#d97706';
+          }
+
+          if (st.timeLeft <= 0) {
+            clearInterval(st.timerInterval);
+            this.handleTimeout(st);
+          }
+        }, 100);
+      }
+
+      handleAnswerFire(st, selectedIdx, btn) {
+        st.locked = true;
+        if (st.timerInterval) clearInterval(st.timerInterval);
+
+        st.answered++;
+        const isCorrect = selectedIdx === st.currentQuestion.answer;
+
+        if (isCorrect) {
+          st.correct++;
+          st.streak++;
+          btn.classList.add('hit');
+          st.el.classList.add('flash-fire');
+          setTimeout(() => st.el.classList.remove('flash-fire'), 500);
+
+          this.game.audio.playCorrect();
+          this.game.combat.triggerAction(st.idx, selectedIdx);
+          this.game.addScore(st.idx, 100 + st.streak * 20);
+
+          const streakEl = document.getElementById(`streak-${st.idx}`);
+          if (streakEl) streakEl.textContent = `🔥 ${st.streak}x`;
+        } else {
+          st.streak = 0;
+          btn.classList.add('miss');
+          st.el.classList.add('flash-miss');
+          setTimeout(() => st.el.classList.remove('flash-miss'), 500);
+
+          this.game.audio.playWrong();
+          this.game.combat.stumbleRunner(st.idx);
+
+          const streakEl = document.getElementById(`streak-${st.idx}`);
+          if (streakEl) streakEl.textContent = `🔥 0x`;
+        }
+
+        setTimeout(() => {
+          this.loadNextTargetQuestion(st);
+        }, 750);
+      }
+
+      handleTimeout(st) {
+        st.locked = true;
+        st.streak = 0;
+        st.answered++;
+
+        st.el.classList.add('flash-miss');
+        setTimeout(() => st.el.classList.remove('flash-miss'), 500);
+        this.game.audio.playWrong();
+        this.game.combat.stumbleRunner(st.idx);
+
+        const streakEl = document.getElementById(`streak-${st.idx}`);
+        if (streakEl) streakEl.textContent = `🔥 0x`;
+
+        setTimeout(() => {
+          this.loadNextTargetQuestion(st);
+        }, 750);
+      }
+
+      updateScoreDOM(teamIdx, score) {
+        const scoreEl = document.getElementById(`score-${teamIdx}`);
+        if (scoreEl) scoreEl.textContent = `${score} PTS`;
+      }
+
+      stopAll() {
+        this.stations.forEach(s => {
+          if (s.timerInterval) clearInterval(s.timerInterval);
+          s.locked = true;
+        });
+      }
+    }
+
+    /* ============================================================
+       5. MAIN RUNNER GAME CONTROLLER
+       ============================================================ */
+    class AerostrikeGame {
+      constructor() {
+        this.teamCount = 4;
+        this.difficulty = 'normal';
+        this.teamNames = ['Squad Rose', 'Squad Sky', 'Squad Emerald', 'Squad Amber'];
+
+        this.teamScores = [0, 0, 0, 0];
+        this.isGameOver = false;
+
+        this.audio = new RunnerAudio();
+        this.combat = new RunnerEngine(document.getElementById('combatCanvas'), this);
+        this.quiz = new CockpitQuizStation(document.getElementById('cockpitDock'), this);
+
+        this.animFrameId = null;
+        this.lastTime = 0;
+
+        this._bindEvents();
+        this._renderSquadronInputs();
+      }
+
+      _bindEvents() {
+        document.querySelectorAll('.select-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.select-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.teamCount = parseInt(btn.getAttribute('data-teams'), 10);
+            this._renderSquadronInputs();
+          });
+        });
+
+        document.querySelectorAll('.diff-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.difficulty = btn.getAttribute('data-diff');
+          });
+        });
+
+        document.getElementById('btnLaunchFlight').addEventListener('click', () => {
+          this.startGame();
+        });
+
+        document.getElementById('btnPlayAgain').addEventListener('click', () => {
+          this.showScreen('setup-screen');
+        });
+
+        document.getElementById('btnToggleAudio').addEventListener('click', () => {
+          this.audio.enabled = !this.audio.enabled;
+          document.getElementById('btnToggleAudio').textContent = this.audio.enabled ? '🔊' : '🔇';
+        });
+
+        document.getElementById('btnToggleFullscreen').addEventListener('click', () => {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        });
+      }
+
+      _renderSquadronInputs() {
+        const container = document.getElementById('squadronsList');
+        container.innerHTML = '';
+        const defaultNames = ['SQUAD ROSE', 'SQUAD SKY', 'SQUAD EMERALD', 'SQUAD AMBER'];
+        const colors = ['#e11d48', '#0284c7', '#10b981', '#d97706'];
+
+        for (let i = 0; i < this.teamCount; i++) {
+          const slot = document.createElement('div');
+          slot.className = 'squadron-slot';
+          slot.style.borderColor = colors[i];
+
+          slot.innerHTML = `
+            <div class="squadron-slot-header">
+              <span style="color: ${colors[i]};">SQUAD 0${i + 1}</span>
+            </div>
+            <input type="text" id="inputSquadron-${i}" class="squadron-input" value="${this.teamNames[i] || defaultNames[i]}" maxlength="16">
+          `;
+          container.appendChild(slot);
+        }
+      }
+
+      _readSquadronInputs() {
+        this.teamNames = [];
+        for (let i = 0; i < this.teamCount; i++) {
+          const input = document.getElementById(`inputSquadron-${i}`);
+          this.teamNames.push(input && input.value.trim() ? input.value.trim() : `SQUAD ${i + 1}`);
+        }
+      }
+
+      showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(screenId);
+        if (target) target.classList.add('active');
+      }
+
+      startGame() {
+        this._readSquadronInputs();
+        this.timerSeconds = this.difficulty === 'easy' ? 30 : (this.difficulty === 'hard' ? 15 : 20);
+
+        this.teamScores = [0, 0, 0, 0];
+        this.isGameOver = false;
+
+        this.showScreen('game-screen');
+        this.combat.resize();
+        this.combat.setupRunners(this.teamCount, this.teamNames);
+        this.quiz.init(this.teamCount, this.teamNames, this.timerSeconds);
+
+        this.lastTime = performance.now();
+        if (this.animFrameId) cancelAnimationFrame(this.animFrameId);
+        this._gameLoop = this._gameLoop.bind(this);
+        this.animFrameId = requestAnimationFrame(this._gameLoop);
+      }
+
+      addScore(teamIdx, amount) {
+        this.teamScores[teamIdx] += amount;
+        this.quiz.updateScoreDOM(teamIdx, this.teamScores[teamIdx]);
+        this.updateTopScoreHUD();
+      }
+
+      updateTopScoreHUD() {
+        let maxScore = -1;
+        let topName = '';
+        for (let i = 0; i < this.teamCount; i++) {
+          if (this.teamScores[i] > maxScore) {
+            maxScore = this.teamScores[i];
+            topName = this.teamNames[i];
+          }
+        }
+        document.getElementById('hudTopScore').textContent = `LEADER: ${topName} (${maxScore} PTS)`;
+      }
+
+      _gameLoop(time) {
+        const dt = (time - this.lastTime) / 1000;
+        this.lastTime = time;
+
+        if (!this.isGameOver) {
+          this.combat.update(dt);
+          this.combat.draw();
+
+          document.getElementById('hudSectorBadge').textContent = `DISTANSI: ${Math.floor(this.combat.distance)} METER`;
+
+          // Check if all team runners are out
+          const alive = this.combat.runners.filter(r => r.lives > 0);
+          if (alive.length === 0 && !this.isGameOver) {
+            this.endGame(false);
+          } else {
+            this.animFrameId = requestAnimationFrame(this._gameLoop);
+          }
+        }
+      }
+
+      endGame(victory) {
+        this.isGameOver = true;
+        this.quiz.stopAll();
+
+        setTimeout(() => {
+          this._showDebriefing(victory);
+        }, 1200);
+      }
+
+      _showDebriefing(victory) {
+        this.showScreen('results-screen');
+
+        const title = document.getElementById('resultsTitle');
+        const sub = document.getElementById('resultsSubtitle');
+
+        title.textContent = '🏆 FINISH LINE REACHED!';
+        sub.innerHTML = `Total jarak yang ditempuh: <strong>${Math.floor(this.combat.distance)} Meter</strong>`;
+
+        const colors = ['#e11d48', '#0284c7', '#10b981', '#d97706'];
+        const ranks = ['🥇', '🥈', '🥉', '4️⃣'];
+
+        const sorted = this.teamNames.slice(0, this.teamCount).map((name, i) => {
+          const st = this.quiz.stations[i] || { correct: 0, answered: 0 };
+          const acc = st.answered > 0 ? Math.round((st.correct / st.answered) * 100) : 0;
+          return {
+            name, idx: i,
+            score: this.teamScores[i],
+            correct: st.correct,
+            answered: st.answered,
+            accuracy: acc
+          };
+        }).sort((a, b) => b.score - a.score);
+
+        const grid = document.getElementById('podiumGrid');
+        grid.innerHTML = '';
+
+        sorted.forEach((t, i) => {
+          const card = document.createElement('div');
+          card.className = `podium-card ${i === 0 ? 'ace' : ''}`;
+          card.style.borderColor = colors[t.idx];
+
+          card.innerHTML = `
+            <div class="podium-rank">${ranks[i]}</div>
+            <div class="podium-name" style="color:${colors[t.idx]};">${t.name}</div>
+            <div class="podium-score">${t.score} PTS</div>
+            <div class="podium-stats-box">
+              🎯 Akurasi Jawaban: <strong>${t.accuracy}%</strong> (${t.correct}/${t.answered})<br>
+              🏃 Status: <strong>${this.combat.runners[t.idx]?.lives > 0 ? 'Lolos Finish' : 'Tumbang'}</strong>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      window.aerostrikeGame = new AerostrikeGame();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Outpost Zero: Zombie Siege Defense — Tactical Quiz Battle IPS Literasi Finansial & Pengenalan Rupiah">
+  <title>🛡️ OUTPOST ZERO: Zombie Siege Defense — Tactical Quiz Battle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧟</text></svg>">
+
+  <style>
+    /* ══════════════════════════════════════════════════════════════════════
+       OUTPOST ZERO: TACTICAL APOCALYPSE DEFENSE THEME
+       Art Direction: Stylized 2D Military Outpost & Tactical Comic Arcade
+       ══════════════════════════════════════════════════════════════════════ */
+    :root {
+      --c-slate-950: #07090e;
+      --c-slate-900: #0d1117;
+      --c-slate-850: #131722;
+      --c-slate-800: #1a202c;
+      --c-slate-700: #2d3748;
+      --c-steel: #4a5568;
+      --c-steel-light: #718096;
+
+      --hazard-yellow: #f59e0b;
+      --hazard-amber: #d97706;
+      --hazard-dark: #271a00;
+      --toxic-green: #10b981;
+      --toxic-glow: rgba(16, 185, 129, 0.4);
+      --alert-crimson: #ef4444;
+      --alert-glow: rgba(239, 68, 68, 0.45);
+      --radar-cyan: #06b6d4;
+
+      /* Team Color Palette (Military Call-Signs) */
+      --t1-crimson: #f43f5e;
+      --t1-glow: rgba(244, 63, 94, 0.4);
+      --t2-cobalt: #0284c7;
+      --t2-glow: rgba(2, 132, 199, 0.4);
+      --t3-emerald: #10b981;
+      --t3-glow: rgba(16, 185, 129, 0.4);
+      --t4-amber: #eab308;
+      --t4-glow: rgba(234, 179, 8, 0.4);
+
+      /* Typography */
+      --font-heading: 'Teko', sans-serif;
+      --font-tactical: 'Rajdhani', sans-serif;
+      --font-body: 'Chakra Petch', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font-body);
+      background: var(--c-slate-950);
+      color: #f7fafc;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* Screen manager */
+    .screen {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .screen.active {
+      display: flex;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       1. SETUP SCREEN: WAR ROOM CRISIS PROTOCOL
+       ══════════════════════════════════════════════════════════════════════ */
+    #setup-screen {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(245, 158, 11, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 20% 80%, rgba(239, 68, 68, 0.06) 0%, transparent 50%),
+        linear-gradient(180deg, #090c14 0%, #05070a 100%);
+      position: relative;
+      overflow-y: auto;
+      padding: 24px;
+      z-index: 10;
+    }
+
+    .ambient-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .setup-bunker-card {
+      position: relative;
+      z-index: 2;
+      width: min(980px, 95vw);
+      background: linear-gradient(145deg, rgba(19, 23, 34, 0.94), rgba(13, 17, 23, 0.97));
+      border: 2px solid #2d3748;
+      border-radius: 20px;
+      padding: clamp(20px, 3.5vw, 36px);
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 0 40px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Rivet screws on bunker panel corners */
+    .setup-bunker-card::before, .setup-bunker-card::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #718096;
+      box-shadow: inset 1px 1px 2px #fff, inset -1px -1px 2px #000;
+    }
+    .setup-bunker-card::before { top: 12px; left: 12px; }
+    .setup-bunker-card::after { top: 12px; right: 12px; }
+
+    .bunker-header {
+      text-align: center;
+      position: relative;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .hazard-stripe {
+      height: 6px;
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--hazard-yellow),
+        var(--hazard-yellow) 12px,
+        #111 12px,
+        #111 24px
+      );
+      border-radius: 3px;
+      margin-bottom: 12px;
+    }
+
+    .setup-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+      font-weight: 700;
+      letter-spacing: 3px;
+      line-height: 1;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 50%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+    }
+
+    .setup-subtitle {
+      font-family: var(--font-tactical);
+      font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+      color: #a0aec0;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .setup-section-label {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--hazard-yellow);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .tactical-btn {
+      background: rgba(26, 32, 44, 0.8);
+      border: 1.5px solid #2d3748;
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #cbd5e1;
+      font-family: var(--font-tactical);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .tactical-btn span { font-family: var(--font-mono); font-size: 0.72rem; color: #718096; letter-spacing: 1px; }
+    .tactical-btn:hover { border-color: var(--hazard-yellow); background: rgba(245, 158, 11, 0.12); color: #ffffff; transform: translateY(-2px); }
+    .tactical-btn.active { border-color: var(--hazard-yellow); background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.2)); color: #ffffff; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+    .tactical-btn.active span { color: #fef3c7; }
+
+    .squadrons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .squadron-slot { background: rgba(13, 17, 23, 0.85); border: 1.5px solid; border-radius: 12px; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
+    .squadron-slot-header { display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; }
+    .squadron-class { font-size: 0.72rem; padding: 1px 6px; border-radius: 4px; background: rgba(255, 255, 255, 0.1); }
+    .squadron-input { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; padding: 6px 10px; color: #ffffff; font-family: var(--font-body); font-weight: 700; font-size: 0.9rem; outline: none; }
+    .squadron-input:focus { border-color: var(--hazard-yellow); }
+
+    .launch-btn {
+      background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
+      color: #07090e; border: none; border-radius: 14px; padding: 16px 28px;
+      font-family: var(--font-heading); font-size: clamp(1.4rem, 2.5vw, 1.8rem); font-weight: 700;
+      letter-spacing: 3px; cursor: pointer; box-shadow: 0 0 35px rgba(245, 158, 11, 0.5);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 6px;
+    }
+    .launch-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 0 50px rgba(245, 158, 11, 0.85); }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       2. IN-GAME COMBAT SCREEN: OUTPOST ZERO BARRICADE
+       ══════════════════════════════════════════════════════════════════════ */
+    #game-screen { flex-direction: column; background: #07090e; }
+
+    .top-avionics {
+      height: 64px; background: rgba(13, 17, 23, 0.95); border-bottom: 2px solid #2d3748;
+      padding: 0 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      backdrop-filter: blur(12px); z-index: 20; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.85); flex-shrink: 0;
+    }
+    .telemetry-left { display: flex; align-items: center; gap: 12px; min-width: 200px; }
+    .sector-badge { background: rgba(245, 158, 11, 0.15); border: 1px solid var(--hazard-yellow); border-radius: 8px; padding: 4px 12px; font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: var(--hazard-yellow); letter-spacing: 1.5px; }
+
+    .telemetry-center { display: flex; flex-direction: column; align-items: center; flex: 1; max-width: 520px; gap: 4px; }
+    .telemetry-row { display: flex; justify-content: space-between; width: 100%; font-size: 0.72rem; font-family: var(--font-mono); font-weight: 700; color: #94a3b8; }
+    .hull-bar-track { width: 100%; height: 12px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 6px; overflow: hidden; position: relative; }
+    .hull-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #d97706, #f59e0b, #10b981); transition: width 0.2s ease; box-shadow: 0 0 10px #f59e0b; }
+    .hull-bar-fill.danger { background: linear-gradient(90deg, #b7094c, #ff1744, #ff5964); box-shadow: 0 0 14px #ff1744; animation: pulseAlert 0.7s infinite alternate; }
+    @keyframes pulseAlert { 0% { opacity: 0.7; } 100% { opacity: 1; } }
+
+    .overdrive-track { width: 100%; height: 6px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 4px; overflow: hidden; }
+    .overdrive-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #059669, #10b981, #34d399); box-shadow: 0 0 12px #10b981; transition: width 0.25s ease; }
+
+    .telemetry-right { display: flex; align-items: center; gap: 10px; }
+    .hud-stat-box { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 4px 10px; font-family: var(--font-mono); font-size: 0.8rem; }
+    .hud-icon-btn { width: 36px; height: 36px; border-radius: 8px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(245, 158, 11, 0.3); color: #94a3b8; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .hud-icon-btn:hover { border-color: var(--hazard-yellow); color: #ffffff; background: rgba(245, 158, 11, 0.15); }
+
+    .dogfight-viewport { flex: 1; position: relative; overflow: hidden; min-height: 260px; }
+    #combatCanvas { width: 100%; height: 100%; display: block; }
+
+    .flight-alert { position: absolute; top: 22%; left: 50%; transform: translate(-50%, -50%) scale(0.7); background: rgba(9, 12, 20, 0.95); border: 2px solid; border-radius: 16px; padding: 16px 36px; text-align: center; z-index: 30; opacity: 0; pointer-events: none; transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 50px rgba(0, 0, 0, 0.9); }
+    .flight-alert.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .flight-alert-title { font-family: var(--font-heading); font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 700; letter-spacing: 3px; }
+    .flight-alert-sub { font-family: var(--font-tactical); font-size: 1rem; color: #cbd5e1; margin-top: 2px; letter-spacing: 1px; }
+
+    .cockpit-dock { min-height: 380px; height: 45vh; max-height: 480px; background: rgba(9, 13, 20, 0.98); border-top: 2px solid #2d3748; display: grid; gap: 8px; padding: 8px 10px; flex-shrink: 0; z-index: 20; box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.85); }
+    .cockpit-dock.teams-2 { grid-template-columns: repeat(2, 1fr); }
+    .cockpit-dock.teams-3 { grid-template-columns: repeat(3, 1fr); }
+    .cockpit-dock.teams-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .station-panel { background: rgba(19, 25, 38, 0.88); border: 1.5px solid; border-radius: 14px; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; position: relative; transition: border-color 0.2s, box-shadow 0.2s; }
+    .station-panel.p0 { border-color: rgba(244, 63, 94, 0.5); }
+    .station-panel.p1 { border-color: rgba(2, 132, 199, 0.5); }
+    .station-panel.p2 { border-color: rgba(16, 185, 129, 0.5); }
+    .station-panel.p3 { border-color: rgba(234, 179, 8, 0.5); }
+
+    .station-panel.flash-fire { animation: pulseFire 0.45s ease; }
+    .station-panel.flash-miss { animation: pulseMiss 0.45s ease; }
+    @keyframes pulseFire { 0%, 100% { background: rgba(19, 25, 38, 0.88); } 50% { background: rgba(16, 185, 129, 0.35); } }
+    @keyframes pulseMiss { 0%, 100% { background: rgba(19, 25, 38, 0.88); } 50% { background: rgba(239, 68, 68, 0.35); } }
+
+    .cockpit-header { padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(0, 0, 0, 0.35); }
+    .squadron-tag { display: flex; align-items: center; gap: 6px; }
+    .squadron-name { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; }
+    .squadron-class-label { font-family: var(--font-mono); font-size: 0.65rem; color: #94a3b8; }
+    .cockpit-stats { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.78rem; }
+    .stats-score { font-weight: 800; }
+    .stats-streak { color: #ffd600; font-weight: 800; }
+
+    .radar-timer-track { height: 4px; background: rgba(15, 23, 42, 0.9); width: 100%; overflow: hidden; }
+    .radar-timer-fill { height: 100%; width: 100%; background: #f59e0b; transition: width 0.1s linear, background-color 0.25s ease; }
+
+    .cockpit-deck { padding: 8px 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; overflow: hidden; }
+    .avionics-meta-row { display: flex; align-items: center; justify-content: space-between; }
+    .topic-badge { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.8px; }
+    .weapon-ready-tag { font-family: var(--font-mono); font-size: 0.65rem; color: #10b981; }
+
+    .cockpit-question { font-size: clamp(0.7rem, 0.92vw, 0.82rem); font-weight: 700; line-height: 1.3; color: #f8fafc; flex: 1; display: flex; align-items: flex-start; overflow-y: auto; max-height: 120px; padding-right: 2px; }
+
+    .fire-options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex-shrink: 0; }
+    .fire-btn {
+      background: rgba(26, 36, 54, 0.88); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 8px;
+      padding: 6px 8px; color: #e2e8f0; font-family: var(--font-body); font-size: clamp(0.65rem, 0.85vw, 0.78rem);
+      font-weight: 600; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: all 0.15s ease; touch-action: manipulation; min-height: 48px; line-height: 1.25;
+    }
+    .fire-btn:hover { background: rgba(245, 158, 11, 0.2); border-color: var(--hazard-yellow); color: #ffffff; transform: translateY(-1px); }
+    .fire-btn .fire-key { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 2px 5px; flex-shrink: 0; }
+    .fire-btn.locked { pointer-events: none; opacity: 0.6; }
+    .fire-btn.hit { background: rgba(16, 185, 129, 0.35) !important; border-color: #10b981 !important; color: #ffffff !important; box-shadow: 0 0 14px rgba(16, 185, 129, 0.6); }
+    .fire-btn.miss { background: rgba(239, 68, 68, 0.35) !important; border-color: #ef4444 !important; color: #ffffff !important; box-shadow: 0 0 14px rgba(239, 68, 68, 0.6); }
+
+    #results-screen { flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #182232 0%, #05070a 85%); position: relative; overflow-y: auto; padding: 24px; z-index: 10; }
+    .results-card { background: rgba(13, 17, 23, 0.95); border: 2px solid #2d3748; border-radius: 20px; padding: clamp(24px, 4vw, 42px); width: min(960px, 94vw); box-shadow: 0 0 50px rgba(245, 158, 11, 0.25); backdrop-filter: blur(16px); display: flex; flex-direction: column; gap: 22px; text-align: center; }
+    .results-title { font-family: var(--font-heading); font-size: clamp(2.2rem, 4.5vw, 3.6rem); font-weight: 700; letter-spacing: 3px; }
+    .results-sub { color: #94a3b8; font-family: var(--font-tactical); font-size: 1.05rem; }
+
+    .podium-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 10px; }
+    .podium-card { background: rgba(21, 28, 42, 0.85); border: 2px solid; border-radius: 16px; padding: 18px 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); position: relative; }
+    .podium-card.ace { transform: scale(1.04); background: linear-gradient(180deg, rgba(245, 158, 11, 0.18), rgba(21, 28, 42, 0.95)); border-width: 2.5px; box-shadow: 0 0 35px rgba(245, 158, 11, 0.35); }
+    .podium-card.ace::after { content: "TOP SURVIVOR SQUAD"; position: absolute; top: -11px; background: #f59e0b; color: #07090e; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 900; letter-spacing: 1.5px; padding: 2px 10px; border-radius: 4px; }
+    .podium-rank { font-size: 2.2rem; }
+    .podium-name { font-family: var(--font-heading); font-size: 1.35rem; font-weight: 700; letter-spacing: 1px; }
+    .podium-score { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 700; }
+    .podium-stats-box { font-family: var(--font-mono); font-size: 0.78rem; color: #cbd5e1; line-height: 1.6; text-align: left; width: 100%; background: rgba(0, 0, 0, 0.35); padding: 8px 12px; border-radius: 8px; margin-top: 4px; }
+
+    .play-again-btn { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #07090e; border: none; border-radius: 14px; padding: 14px 28px; font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700; letter-spacing: 2px; cursor: pointer; align-self: center; box-shadow: 0 0 25px rgba(245, 158, 11, 0.5); transition: all 0.2s; }
+    .play-again-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 0 40px rgba(245, 158, 11, 0.8); }
+  </style>
+</head>
+<body>
+  <div class="crt-overlay"></div>
+
+  <!-- SETUP SCREEN -->
+  <div id="setup-screen" class="screen active">
+    <canvas id="hangarCanvas" class="hangar-canvas"></canvas>
+
+    <div class="setup-bunker-card">
+      <div class="bunker-header">
+        <div class="hazard-stripe"></div>
+        <h1 class="setup-title">OUTPOST ZERO: ZOMBIE SIEGE DEFENSE</h1>
+        <p class="setup-subtitle">Tactical Base Defense & Multi-Touch Quiz — Kuis IPS Literasi Finansial & Pengenalan Rupiah (20 Soal HOTS Baru)</p>
+      </div>
+
+      <div>
+        <div class="setup-section-label"><span>🧟</span> JUMLAH SQUAD DEFENSE (2 - 4 TIM SIMULTAN)</div>
+        <div class="grid-3col">
+          <button type="button" class="tactical-btn select-btn" data-teams="2">2 SQUAD<span>DUO BARRICADE</span></button>
+          <button type="button" class="tactical-btn select-btn" data-teams="3">3 SQUAD<span>TRIO TACTICAL</span></button>
+          <button type="button" class="tactical-btn select-btn active" data-teams="4">4 SQUAD<span>FULL BARRICADE DEFENSE</span></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="setup-section-label"><span>🎯</span> INTENSITAS GELOMBANG MUTAN</div>
+        <div class="grid-3col">
+          <button type="button" class="tactical-btn diff-btn" data-diff="easy">
+            <span class="diff-tag">REKRUT (MUDAH)</span>
+            <span>Timer 30s • Zombie Lambat • Bunker HP +50%</span>
+          </button>
+          <button type="button" class="tactical-btn diff-btn active" data-diff="normal">
+            <span class="diff-tag">VETERAN (STANDAR)</span>
+            <span>Timer 20s • Swarm Taktis • Bunker HP 100%</span>
+          </button>
+          <button type="button" class="tactical-btn diff-btn" data-diff="hard">
+            <span class="diff-tag">ELITE (SULIT)</span>
+            <span>Timer 15s • Runner Swarm • Boss Acid Rampage</span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="setup-section-label"><span>🛡️</span> CALL-SIGN SQUAD PERTAHANAN</div>
+        <div id="squadronsList" class="squadrons-grid"></div>
+      </div>
+
+      <button type="button" id="btnLaunchFlight" class="launch-btn">
+        <span>☣️ PERTAHANKAN BENTENG BARRICADE</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- IN-GAME COMBAT & QUIZ SCREEN -->
+  <div id="game-screen" class="screen">
+    <header class="top-avionics">
+      <div class="telemetry-left">
+        <div class="sector-badge" id="hudSectorBadge">WAVE 1 / 5</div>
+        <div class="hud-stat-box" id="hudDiffLabel" style="color: #ffd600;">VETERAN FLIGHT</div>
+      </div>
+
+      <div class="telemetry-center">
+        <div class="telemetry-row">
+          <span>OUTPOST BUNKER HULL INTEGRITY</span>
+          <span id="hudHullText" style="color: #f59e0b;">1000 / 1000 HP</span>
+        </div>
+        <div class="hull-bar-track">
+          <div id="hudHullFill" class="hull-bar-fill"></div>
+        </div>
+        <div class="telemetry-row" style="margin-top: 2px;">
+          <span>TESLA COIL OVERCHARGE METER</span>
+          <span id="hudOverdriveText" style="color: #10b981;">READY: 0%</span>
+        </div>
+        <div class="overdrive-track">
+          <div id="hudOverdriveFill" class="overdrive-fill"></div>
+        </div>
+      </div>
+
+      <div class="telemetry-right">
+        <div class="hud-stat-box" id="hudTopScore">LEADER: 0 PTS</div>
+        <button type="button" id="btnToggleAudio" class="hud-icon-btn" title="Toggle Audio">🔊</button>
+        <button type="button" id="btnToggleFullscreen" class="hud-icon-btn" title="Fullscreen">⛶</button>
+      </div>
+    </header>
+
+    <main class="dogfight-viewport">
+      <canvas id="combatCanvas"></canvas>
+      <div id="flightAlert" class="flight-alert">
+        <div id="flightAlertTitle" class="flight-alert-title">OUTBREAK ALERT</div>
+        <div id="flightAlertSub" class="flight-alert-sub">Gerombolan mutan zombie mendekati benteng!</div>
+      </div>
+    </main>
+
+    <footer id="cockpitDock" class="cockpit-dock teams-4"></footer>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="results-screen" class="screen">
+    <div class="results-card">
+      <div>
+        <h1 id="resultsTitle" class="results-title">🏆 OUTPOST SECURED!</h1>
+        <p id="resultsSubtitle" class="results-sub">Seluruh gelombang mutan zombie berhasil dihalau dari benteng sangtuari.</p>
+      </div>
+
+      <div id="podiumGrid" class="podium-grid"></div>
+
+      <button type="button" id="btnPlayAgain" class="play-again-btn">
+        <span>🔄 KEMBALI KE BARRICADE DOCK</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       1. QUESTION BANK — 20 SOAL HOTS BARU IPS LITERASI FINANSIAL
+       ============================================================ */
+    const QUESTIONS_BANK = [
+      {
+        question: "Berdasarkan Teori Liquidity Preference dari John Maynard Keynes, seseorang memilih memegang uang tunai untuk mengantisipasi kejadian mendadak seperti sakit atau kerusakan peralatan usaha. Motif memegang uang tersebut dinamakan...",
+        options: [
+          "Motif Transaksi (Transaction Motive)",
+          "Motif Berjaga-jaga (Precautionary Motive)",
+          "Motif Spekulasi (Speculative Motive)",
+          "Motif Investasi Jangka Panjang (Investment Motive)"
+        ],
+        answer: 1,
+        topic: "Motif Memegang Uang"
+      },
+      {
+        question: "Nilai tukar Rupiah terhadap Dolar AS melemah dari Rp15.000 menjadi Rp16.000 per 1 USD. Dampak paling tepat mengenai kondisi neraca perdagangan dan harga barang impor di dalam negeri adalah...",
+        options: [
+          "Harga barang impor menjadi lebih murah sehingga konsumsi masyarakat naik pesat.",
+          "Harga barang impor menjadi lebih mahal (Imported Inflation) dan menguntungkan produsen ekspor lokal.",
+          "Nilai utang luar negeri dalam mata uang Rupiah berkurang secara otomatis.",
+          "Bank Indonesia wajib mencetak uang kertas dua kali lebih banyak."
+        ],
+        answer: 1,
+        topic: "Kurs Valuta Asing & Inflasi"
+      },
+      {
+        question: "Saat bertransaksi menggunakan kartu debit di mesin EDC atau m-banking, masyarakat menerima notifikasi pemotongan saldo secara langsung. Penggunaan uang digital/elektronik ini tergolong ke dalam...",
+        options: [
+          "Uang Kartal yang diterbitkan langsung oleh Bank Sentral secara fisik.",
+          "Uang Giral / Saldo Elektronik yang diterbitkan bank untuk kemudahan transaksi non-tunai.",
+          "Uang Komoditas bernilai intrinsek setara dengan bahan baku cetak.",
+          "Surat Berharga Negara yang tidak dapat diperjualbelikan."
+        ],
+        answer: 1,
+        topic: "Uang Giral & Non-Tunai"
+      },
+      {
+        question: "Seorang pengusaha UMKM ingin menyimpan kelebihan modal usaha selama 6 bulan di bank agar aman dan mendapatkan imbal hasil yang pasti tanpa risiko fluktuasi harga pasar saham. Instrumen simpanan bank paling tepat adalah...",
+        options: [
+          "Tabungan Biasa dengan penarikan harian tanpa batas.",
+          "Deposito Berjangka (Time Deposit) dengan jangka waktu tertentu dan bunga tetap.",
+          "Saham Spekulatif di Bursa Efek Indonesia.",
+          "Pinjaman Online Konsumtif tanpa jaminan."
+        ],
+        answer: 1,
+        topic: "Instrumen Keuangan Bank"
+      },
+      {
+        question: "Suku Bunga Acuan (BI-Rate) dinaikkan oleh Bank Indonesia untuk mengendalikan laju inflasi yang terlalu tinggi. Analisis mekanisme dampak kebijakan moneter ini terhadap perekonomian adalah...",
+        options: [
+          "Suku bunga kredit naik -> masyarakat cenderung menabung -> jumlah uang beredar berkurang -> inflasi melambat.",
+          "Suku bunga kredit turun -> masyarakat berbondong-bondong mengambil pinjaman -> harga barang melonjak tinggi.",
+          "Masyarakat berhenti menggunakan uang Rupiah dan beralih ke uang asing.",
+          "Pemerintah menutup seluruh akses transaksi digital QRIS."
+        ],
+        answer: 0,
+        topic: "Kebijakan Moneter BI"
+      },
+      {
+        question: "Pada uang Rupiah Kertas TE 2022, Bank Indonesia menggunakan Optically Variable Ink (OVI) pada angka nominal pecahan besar. Fitur pengaman ini menunjukkan perubahan warna dinamis dari...",
+        options: [
+          "Merah menjadi kuning emas saat terkena tetesan air.",
+          "Hijau menjadi biru saat dilihat dari sudut pandang berbeda.",
+          "Hitam menjadi transparan saat dipanaskan di atas api.",
+          "Ungu menjadi merah muda saat dimasukkan ke dalam mesin hitung."
+        ],
+        answer: 1,
+        topic: "Unsur Pengaman Tinta OVI"
+      },
+      {
+        question: "Budi memiliki dana Rp10.000.000. Jika dia memilih membeli barang elektronik mewah yang nilainya turun 30% dalam setahun daripada menginvestasikannya di Surat Berharga Negara (SBN) bunga 6% per tahun, biaya peluang (Opportunity Cost) Budi adalah...",
+        options: [
+          "Kerugian fisik atas barang elektronik yang dibeli.",
+          "Potensi keuntungan imbal hasil SBN sebesar Rp600.000 per tahun yang hilang.",
+          "Biaya pajak pertambahan nilai (PPN) saat belanja di toko.",
+          "Selisih harga jual bekas barang elektronik setelah dipakai setahun."
+        ],
+        answer: 1,
+        topic: "Biaya Peluang (Opportunity Cost)"
+      },
+      {
+        question: "Konsep Time Value of Money menyatakan bahwa nilai Rp1.000.000 saat ini lebih berharga daripada nilai Rp1.000.000 di masa 5 tahun mendatang. Alasan ekonomi paling mendasar di balik konsep ini adalah...",
+        options: [
+          "Uang di masa mendatang akan secara otomatis berganti warna kertasnya.",
+          "Adanya faktor inflasi yang mengikis daya beli serta potensi imbal hasil dari investasi uang tersebut saat ini.",
+          "Jumlah penduduk yang semakin bertambah membuat harga uang menjadi murah.",
+          "Bank Indonesia menarik seluruh edaran uang kuno setiap lima tahun sekali."
+        ],
+        answer: 1,
+        topic: "Time Value of Money"
+      },
+      {
+        question: "Seseorang menerima gaji bulanan dan mendapati potongan Pajak Penghasilan (PPh). Manakah pernyataan paling tepat mengenai kontribusi pajak ini dalam fungsi APBN negara?",
+        options: [
+          "Pajak merupakan sumber pendapatan utama negara untuk membiayai pembangunan infrastruktur dan fasilitas publik.",
+          "Pajak disimpan utuh di brankas bank swasta sebagai keuntungan pribadi pengusaha.",
+          "Pajak digunakan untuk membeli mata uang asing sebanyak-banyaknya di pasar bebas.",
+          "Pajak diwajibkan hanya kepada masyarakat yang tidak memiliki pekerjaan tetap."
+        ],
+        answer: 0,
+        topic: "Pajak & APBN"
+      },
+      {
+        question: "Untuk mencegah kebocoran data pribadi keuangan dan penipuan berbasis Phishing/OTP, tindakan keamanan digital yang paling tepat dipraktikkan adalah...",
+        options: [
+          "Membagikan Kode OTP dan PIN m-banking kepada siapapun yang mengaku petugas bank.",
+          "Tidak memberikan kode OTP/PIN kepada siapapun serta mengaktifkan Otentikasi Dua Faktor (2FA).",
+          "Menggunakan kata sandi yang sama persis untuk semua akun media sosial dan aplikasi keuangan.",
+          "Mengeklik tautan asing tidak dikenal di pesan singkat yang menawarkan hadiah uang tunai gratis."
+        ],
+        answer: 1,
+        topic: "Keamanan Keuangan Digital"
+      },
+      {
+        question: "Seorang konsumen merasa dirugikan oleh lembaga keuangan resmi karena adanya pemotongan biaya tersembunyi yang tidak sesuai perjanjian awal. Lembaga manakah yang dapat memberikan sarana perlindungan dan penyelesaian sengketa konsumen tersebut?",
+        options: [
+          "Lembaga Penjamin Simpanan (LPS)",
+          "Otoritas Jasa Keuangan (OJK) melalui Layanan Konsumen Kontak 157",
+          "Kementerian Komunikasi dan Informatika",
+          "Badan Pusat Statistik (BPS)"
+        ],
+        answer: 1,
+        topic: "Perlindungan Konsumen OJK"
+      },
+      {
+        question: "Perusahaan skala besar menerbitkan Obligasi (Surat Utang) di Pasar Modal untuk memperluas pabrik baru. Investor yang membeli obligasi tersebut berhak menerima...",
+        options: [
+          "Kepemilikan penuh atas nama perusahaan dan hak memecat direksi.",
+          "Pembayaran kupon bunga secara berkala dan pengembalian pokok utang pada saat jatuh tempo.",
+          "Jaminan dividen tanpa batas yang tidak pernah dapat berkurang.",
+          "Sertifikat tanah gratis dari lokasi pembangunan pabrik baru."
+        ],
+        answer: 1,
+        topic: "Pasar Modal & Obligasi"
+      },
+      {
+        question: "Pemerintah bersama Bank Indonesia melakukan pangkas nilai pecahan Rupiah, misalnya dari Rp1.000 menjadi Rp1 tanpa mengurangi nilai riil dan daya beli uang terhadap barang. Kebijakan ini dikenal dengan istilah...",
+        options: [
+          "Sanering (pemotongan daya beli uang saat krisis berat).",
+          "Redenominasi (penyederhanaan penulisan pecahan nominal uang).",
+          "Devaluasi (penurunan nilai tukar mata uang secara sengaja).",
+          "Inflasi Berat (kenaikan harga barang di atas 100%)."
+        ],
+        answer: 1,
+        topic: "Redenominasi Rupiah"
+      },
+      {
+        question: "Manakah pasangan fungsi uang yang dikategorikan sebagai Fungsi Asli (Primary Functions) uang dalam perekonomian?",
+        options: [
+          "Alat Penimbun Kekayaan dan Alat Pembayaran Utang.",
+          "Alat Tukar Umum (Medium of Exchange) dan Satuan Hitung (Unit of Account).",
+          "Alat Pemindah Kekayaan dan Penunjuk Harga Pasar.",
+          "Standar Pembayaran Masa Depan dan Alat Pembentuk Modal."
+        ],
+        answer: 1,
+        topic: "Fungsi Asli Uang"
+      },
+      {
+        question: "Di tengah maraknya tren belanja online, Rina sering membeli barang-barang promosi yang tidak dibutuhkannya hanya karena takut tertinggal tren teman-temannya (*FOMO*). Dampak negatif jangka panjang bagi kondisi keuangan Rina adalah...",
+        options: [
+          "Nilai kekayaannya meningkat cepat karena barang bekas dapat dijual mahal.",
+          "Terjadi kegagalan akumulasi tabungan dana darurat dan potensi terjebak utang konsumtif.",
+          "Rina secara otomatis terdaftar sebagai investor saham terbaik OJK.",
+          "Tingkat inflasi di Indonesia langsung mengalami penurunan drastis."
+        ],
+        answer: 1,
+        topic: "Perilaku Konsumtif & FOMO"
+      },
+      {
+        question: "Manakah perbedaan mendasar antara Lembaga Keuangan Bank (LKB) dan Lembaga Keuangan Non-Bank (LKNB) seperti Perusahaan Asuransi atau Pegadaian?",
+        options: [
+          "Bank dapat menghimpun dana langsung dari masyarakat dalam bentuk simpanan/giro, sedangkan LKNB umumnya memberikan layanan khusus seperti perlindungan risiko atau pinjaman jaminan barang.",
+          "Bank hanya menerima transaksi uang asing, sedangkan LKNB hanya menggunakan uang tunai rupiah.",
+          "LKNB diawasi oleh Bank Indonesia, sedangkan Bank tidak diawasi siapapun.",
+          "Bank tidak boleh menyalurkan kredit kepada masyarakat umum."
+        ],
+        answer: 0,
+        topic: "Lembaga Keuangan Bank & LKNB"
+      },
+      {
+        question: "Seorang pedagang pasar tradisional mendapati stiker QRIS di tokonya ditimpa oleh oknum tak dikenal dengan stiker QRIS lain. Tindakan verifikasi wajib bagi pedagang saat konsumen membayar adalah...",
+        options: [
+          "Mengabaikan notifikasi dan langsung percaya klaim pembeli.",
+          "Mengecek kecocokan nama toko/merchant pada notifikasi aplikasi penerima sebelum menyerahkan barang.",
+          "Meminta pembeli membayar menggunakan uang mata uang asing.",
+          "Menutup toko dan mengembalikan semua barang ke pabrik."
+        ],
+        answer: 1,
+        topic: "Keamanan Transaksi QRIS"
+      },
+      {
+        question: "Dalam upaya menjaga stabilitas finansial keluarga, besaran porsi dana darurat (Emergency Fund) ideal bagi seseorang yang belum menikah/lajang adalah minimal sebesar...",
+        options: [
+          "1 kali pengeluaran bulanan.",
+          "3 - 6 kali pengeluaran bulanan rutin.",
+          "24 kali pendapatan kotor tahunan.",
+          "Sama dengan jumlah seluruh utang jangka panjang."
+        ],
+        answer: 1,
+        topic: "Perencanaan Dana Darurat"
+      },
+      {
+        question: "Dalam transaksi perdagangan internasional, apabila Indonesia mencatatkan nilai Ekspor lebih besar daripada nilai Impor (Ekspor > Impor), maka kondisi Neraca Perdagangan Indonesia mengalami...",
+        options: [
+          "Defisit Perdagangan (Kerugian Devisa).",
+          "Surplus Perdagangan (Penambahan Devisa Negara).",
+          "Stagflasi Ekonomi.",
+          "Bangkrut Nasional."
+        ],
+        answer: 1,
+        topic: "Perdagangan Internasional"
+      },
+      {
+        question: "Gerakan 'Cinta, Bangga, Paham Rupiah' menekankan perlakuan fisik terhadap uang kertas. Perilaku '5 Jangan' dalam merawat Rupiah meliputi...",
+        options: [
+          "Jangan Dilihat, Jangan Diraba, Jangan Diterawang, Jangan Disimpan, Jangan Dijual.",
+          "Jangan Dilipat, Jangan Diremas, Jangan Dicoret, Jangan Dibasahi, Jangan Distapler.",
+          "Jangan Dibawa, Jangan Ditukar, Jangan Dibelanjakan, Jangan Disumbang, Jangan Ditabung.",
+          "Jangan Dicetak, Jangan Dihitung, Jangan Dipinjam, Jangan Dibuang, Jangan Dipajang."
+        ],
+        answer: 1,
+        topic: "Cinta Bangga Paham Rupiah"
+      }
+    ];
+
+    /* ============================================================
+       2. PROCEDURAL SOUND SYNTHESIZER (WEB AUDIO API)
+       ============================================================ */
+    class DogfightAudio {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      _init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playWeapon(shipClassIdx) {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        if (shipClassIdx === 0) {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(500, now);
+          osc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        } else if (shipClassIdx === 1) {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(750, now);
+          osc.frequency.exponentialRampToValueAtTime(160, now + 0.2);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        } else if (shipClassIdx === 2) {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(70, now + 0.18);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        } else {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(260, now);
+          osc.frequency.exponentialRampToValueAtTime(40, now + 0.28);
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        }
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      }
+
+      playExplosion(isBoss = false) {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const duration = isBoss ? 0.8 : 0.35;
+        const bufferSize = this.ctx.sampleRate * duration;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(isBoss ? 350 : 600, now);
+        filter.frequency.exponentialRampToValueAtTime(20, now + duration);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(isBoss ? 0.6 : 0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(now);
+      }
+
+      playOverdriveBarrage() {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const chords = [440, 554.37, 659.25, 880];
+        chords.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + idx * 0.08 + 0.5);
+          gain.gain.setValueAtTime(0.2, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.5);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.5);
+        });
+      }
+
+      playCorrect() {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(783.99, now + 0.09);
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      }
+
+      playWrong() {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.setValueAtTime(110, now + 0.1);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+
+      playAlarm() {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.linearRampToValueAtTime(350, now + 0.25);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+
+      playVictory() {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+          gain.gain.setValueAtTime(0.3, now + idx * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.4);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.12);
+          osc.stop(now + idx * 0.12 + 0.4);
+        });
+      }
+
+      playDefeat() {
+        if (!this.enabled) return;
+        this._init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [440, 415.30, 392, 349.23].forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.15);
+          gain.gain.setValueAtTime(0.3, now + idx * 0.15);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.15 + 0.45);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.15);
+          osc.stop(now + idx * 0.15 + 0.45);
+        });
+      }
+    }
+
+    /* ============================================================
+       3. OUTPOST ZERO BARRICADE DEFENSE RENDERER (CANVAS 2D)
+       ============================================================ */
+    class OutpostRenderer {
+      constructor(canvas, game) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.game = game;
+
+        this.width = 0;
+        this.height = 0;
+
+        this.stars = [];
+        this.playerFighters = [];
+        this.enemies = [];
+        this.lasers = [];
+        this.enemyFire = [];
+        this.lootDrops = [];
+        this.particles = [];
+        this.hudDamageTags = [];
+
+        this.screenShake = 0;
+        this.searchlightAngle = 0;
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        this._initBackdrop();
+      }
+
+      resize() {
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.width = rect.width || 1200;
+        this.height = rect.height || 400;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+        this.repositionPlayerFighters();
+      }
+
+      _initBackdrop() {
+        this.stars = [];
+        for (let i = 0; i < 90; i++) {
+          this.stars.push({
+            x: Math.random() * (this.width || 1400),
+            y: Math.random() * (this.height || 600),
+            size: Math.random() * 2 + 0.5,
+            speed: Math.random() * 0.8 + 0.2,
+            alpha: Math.random() * 0.5 + 0.2
+          });
+        }
+      }
+
+      getPathBounds() {
+        return {
+          top: this.height * 0.28,
+          bottom: this.height * 0.72,
+          centerY: this.height * 0.5,
+          height: this.height * 0.44
+        };
+      }
+
+      getBasePosition() {
+        return { x: this.width - 65, y: this.height * 0.5 };
+      }
+
+      getBaseReachX() {
+        return this.width - 110;
+      }
+
+      setupFighters(teamCount, teamNames) {
+        this.playerFighters = [];
+        const classes = [
+          { name: 'CRIMSON BARRICADE', color: '#f43f5e', weaponType: 'shotgun' },
+          { name: 'COBALT TURRET', color: '#0284c7', weaponType: 'flamethrower' },
+          { name: 'EMERALD CANNON', color: '#10b981', weaponType: 'railgun' },
+          { name: 'AMBER ARTILLERY', color: '#eab308', weaponType: 'rocket' }
+        ];
+
+        const path = this.getPathBounds();
+        for (let i = 0; i < teamCount; i++) {
+          const cls = classes[i % classes.length];
+          const isAbove = i % 2 === 0;
+          const posX = this.width * (0.55 + (Math.floor(i / 2) * 0.2));
+          const posY = isAbove ? path.top - 24 : path.bottom + 24;
+
+          this.playerFighters.push({
+            teamIdx: i,
+            name: (teamNames && teamNames[i]) || `Squad ${i + 1}`,
+            className: cls.name,
+            color: cls.color,
+            weaponType: cls.weaponType,
+            x: posX,
+            y: posY,
+            firingGlow: 0,
+            angle: Math.atan2(path.centerY - posY, 0 - posX)
+          });
+        }
+      }
+
+      repositionPlayerFighters() {
+        if (!this.playerFighters) return;
+        const path = this.getPathBounds();
+        this.playerFighters.forEach((f, i) => {
+          const isAbove = i % 2 === 0;
+          f.x = this.width * (0.55 + (Math.floor(i / 2) * 0.2));
+          f.y = isAbove ? path.top - 24 : path.bottom + 24;
+        });
+      }
+
+      spawnEnemy(type, wave) {
+        const isEasy = this.game.difficulty === 'easy';
+        const hpMultiplier = isEasy ? 0.65 : (this.game.difficulty === 'hard' ? 1.3 : 1.0);
+        const speedMultiplier = isEasy ? 0.75 : (this.game.difficulty === 'hard' ? 1.25 : 1.0);
+
+        const path = this.getPathBounds();
+        const spawnY = path.top + 20 + Math.random() * (path.height - 40);
+        const x = -30;
+
+        if (type === 'walker') {
+          const hp = Math.round((60 + Math.random() * 30 + wave * 10) * hpMultiplier);
+          this.enemies.push({
+            type, x, y: spawnY,
+            hp, maxHp: hp,
+            radius: 18,
+            color: '#10b981',
+            baseSpeed: (1.5 + wave * 0.1) * speedMultiplier,
+            vx: (1.5 + wave * 0.1) * speedMultiplier,
+            sineAmp: 18,
+            sineFreq: 0.04,
+            flightTime: Math.random() * 10, isBoss: false
+          });
+        } else if (type === 'runner') {
+          const hp = Math.round((85 + Math.random() * 40 + wave * 12) * hpMultiplier);
+          this.enemies.push({
+            type, x, y: spawnY,
+            hp, maxHp: hp,
+            radius: 20,
+            color: '#ff1744',
+            baseSpeed: (2.3 + wave * 0.12) * speedMultiplier,
+            vx: (2.3 + wave * 0.12) * speedMultiplier,
+            sineAmp: 30,
+            sineFreq: 0.05,
+            flightTime: Math.random() * 10,
+            cooldown: 2000,
+            lastFire: Date.now() + Math.random() * 600,
+            isBoss: false
+          });
+        } else if (type === 'spitter') {
+          const hp = Math.round((190 + Math.random() * 60 + wave * 22) * hpMultiplier);
+          this.enemies.push({
+            type, x, y: spawnY,
+            hp, maxHp: hp,
+            radius: 30,
+            color: '#c084fc',
+            baseSpeed: 0.8 * speedMultiplier,
+            vx: 0.8 * speedMultiplier,
+            patrolX: this.width * 0.35 + Math.random() * 120,
+            vy: (Math.random() > 0.5 ? 1 : -1) * 0.6 * speedMultiplier,
+            flightTime: 0,
+            cooldown: (isEasy ? 3200 : 2200),
+            lastFire: Date.now() + 1000,
+            isBoss: false
+          });
+        } else if (type === 'behemoth_boss') {
+          const hp = Math.round((600 + wave * 130) * hpMultiplier);
+          this.enemies.push({
+            type, x, y: path.centerY,
+            hp, maxHp: hp,
+            radius: 52,
+            color: '#ffd600',
+            baseSpeed: 0.45 * speedMultiplier,
+            vx: 0.45 * speedMultiplier,
+            patrolX: this.width * 0.42,
+            vy: 0.7 * speedMultiplier,
+            flightTime: 0,
+            cooldown: (isEasy ? 3000 : 2000),
+            lastFire: Date.now() + 1200,
+            isBoss: true
+          });
+        }
+      }
+
+      fireSquadronWeapon(teamIdx, isCritical = false) {
+        const fighter = this.playerFighters[teamIdx];
+        if (!fighter) return;
+
+        fighter.firingGlow = 1.0;
+
+        let target = null;
+        let lowestDist = Infinity;
+        for (const en of this.enemies) {
+          const dist = Math.hypot(en.x - fighter.x, en.y - fighter.y);
+          if (dist < lowestDist) {
+            lowestDist = dist;
+            target = en;
+          }
+        }
+
+        const baseDmg = isCritical ? 145 : 70;
+        this.game.audio.playWeapon(teamIdx);
+
+        if (target) {
+          fighter.angle = Math.atan2(target.y - fighter.y, target.x - fighter.x);
+        }
+
+        const targetX = target ? target.x : fighter.x - 300;
+        const targetY = target ? target.y : fighter.y;
+
+        this.lasers.push({
+          fromX: fighter.x, fromY: fighter.y,
+          toX: targetX, toY: targetY,
+          color: fighter.color, isCrit: isCritical,
+          life: 1.0
+        });
+
+        if (target) {
+          this.damageEnemy(target, baseDmg, teamIdx, fighter.color);
+        }
+
+        this.game.addOverdrive(isCritical ? 18 : 9);
+      }
+
+      triggerOverdriveBarrage() {
+        this.game.audio.playOverdriveBarrage();
+        this.screenShake = 18;
+        this.addDamageTag(this.width / 2, this.height * 0.35, "⚡ TESLA COIL OVERCHARGE BARRAGE!", "#ffd600", 2.0);
+
+        this.enemies.forEach(en => {
+          this.lasers.push({
+            fromX: this.getBasePosition().x, fromY: this.getBasePosition().y,
+            toX: en.x, toY: en.y,
+            color: '#ffd600', isCrit: true, life: 1.0
+          });
+          this.damageEnemy(en, 130, 0, '#ffd600');
+        });
+      }
+
+      damageEnemy(en, damage, teamIdx, color) {
+        en.hp -= damage;
+        this.addDamageTag(en.x, en.y, `-${damage}`, color, damage >= 100 ? 1.4 : 1.0);
+        this.createHitSparks(en.x, en.y, color, 8);
+        this.game.recordDamage(teamIdx, damage);
+
+        if (en.hp <= 0) {
+          this.destroyEnemy(en, teamIdx);
+        }
+      }
+
+      destroyEnemy(en, teamIdx) {
+        const idx = this.enemies.indexOf(en);
+        if (idx !== -1) {
+          this.enemies.splice(idx, 1);
+        }
+
+        this.game.recordKill(teamIdx, en.isBoss);
+        this.game.audio.playExplosion(en.isBoss);
+        this.createExplosion(en.x, en.y, en.color, en.isBoss ? 55 : 22);
+
+        if (Math.random() < 0.45 || en.isBoss) {
+          const isRepair = Math.random() < 0.6;
+          this.lootDrops.push({
+            x: en.x, y: en.y, vx: 1.4,
+            type: isRepair ? 'repair' : 'overdrive',
+            color: isRepair ? '#10b981' : '#ffd600',
+            label: isRepair ? '+50 BARRICADE' : '+15% TESLA'
+          });
+        }
+
+        if (en.isBoss) {
+          this.screenShake = 22;
+          this.addDamageTag(en.x, en.y - 24, "☠ TITAN BEHEMOTH NEUTRALIZED!", "#ffd600", 1.8);
+        }
+      }
+
+      createExplosion(x, y, color, count = 25) {
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 5 + 1.5;
+          this.particles.push({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: Math.random() * 3 + 1.5,
+            color, alpha: 1,
+            decay: Math.random() * 0.035 + 0.015
+          });
+        }
+      }
+
+      createHitSparks(x, y, color, count = 6) {
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 3 + 1;
+          this.particles.push({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: Math.random() * 2 + 1,
+            color, alpha: 1, decay: 0.06
+          });
+        }
+      }
+
+      addDamageTag(x, y, text, color, scale = 1.0) {
+        this.hudDamageTags.push({
+          x, y, text, color, scale, alpha: 1, vy: -1.5
+        });
+      }
+
+      update(dt) {
+        const timeScale = Math.min(1.8, Math.max(0.5, (dt || 0.016) * 60));
+
+        if (this.screenShake > 0) {
+          this.screenShake *= 0.88;
+          if (this.screenShake < 0.2) this.screenShake = 0;
+        }
+
+        this.searchlightAngle += 0.012 * timeScale;
+
+        this.stars.forEach(s => {
+          s.x -= s.speed * 0.8 * timeScale;
+          if (s.x < 0) {
+            s.x = this.width;
+            s.y = Math.random() * this.height;
+          }
+        });
+
+        this.playerFighters.forEach(f => {
+          if (f.firingGlow > 0) f.firingGlow = Math.max(0, f.firingGlow - 0.05 * timeScale);
+        });
+
+        const reachX = this.getBaseReachX();
+        for (let i = this.enemies.length - 1; i >= 0; i--) {
+          const en = this.enemies[i];
+          en.flightTime += 0.025 * timeScale;
+
+          if (en.type === 'walker') {
+            en.x += en.vx * timeScale;
+            en.y += Math.sin(en.flightTime * 2.5) * 1.8 * timeScale;
+          } else if (en.type === 'runner') {
+            en.x += en.vx * timeScale;
+            en.y += Math.cos(en.flightTime * 2.0) * 2.5 * timeScale;
+          } else if (en.type === 'spitter') {
+            if (en.x < en.patrolX) {
+              en.x += en.vx * timeScale;
+            } else {
+              en.y += en.vy * timeScale;
+              const path = this.getPathBounds();
+              if (en.y < path.top + 20 || en.y > path.bottom - 20) en.vy *= -1;
+
+              const now = Date.now();
+              if (now - en.lastFire >= en.cooldown) {
+                en.lastFire = now;
+                const dmg = this.game.difficulty === 'easy' ? 3 : 5;
+                this.enemyFire.push({
+                  x: en.x, y: en.y, vx: 3.5, vy: 0, color: '#c084fc', damage: dmg
+                });
+                this.createHitSparks(en.x, en.y, '#c084fc', 6);
+                this.addDamageTag(en.x, en.y - 18, "☣ ACID SPIT", "#c084fc", 0.95);
+              }
+            }
+          } else if (en.type === 'behemoth_boss') {
+            if (en.x < en.patrolX) {
+              en.x += en.vx * timeScale;
+            } else {
+              en.y += en.vy * timeScale;
+              const path = this.getPathBounds();
+              if (en.y < path.top + 30 || en.y > path.bottom - 30) en.vy *= -1;
+
+              const now = Date.now();
+              if (now - en.lastFire >= en.cooldown) {
+                en.lastFire = now;
+                const bossDmg = this.game.difficulty === 'easy' ? 4 : 8;
+                [-20, 0, 20].forEach(oy => {
+                  this.enemyFire.push({
+                    x: en.x, y: en.y + oy, vx: 3.0, vy: oy * 0.05, color: '#ffd600', damage: bossDmg
+                  });
+                });
+                this.screenShake = 6;
+                this.game.audio.playAlarm();
+                this.addDamageTag(en.x, en.y - 30, "☣ ALPHA TOXIC WAVE", "#ffd600", 1.25);
+              }
+            }
+          }
+
+          if (en.x + en.radius >= reachX) {
+            const breachDmg = en.isBoss ? 200 : Math.round(en.hp * 0.75);
+            this.game.damageHull(breachDmg);
+            this.createExplosion(reachX, en.y, '#ff1744', 28);
+            this.screenShake = 12;
+            this.game.audio.playAlarm();
+            this.enemies.splice(i, 1);
+          }
+        }
+
+        for (let i = this.enemyFire.length - 1; i >= 0; i--) {
+          const ef = this.enemyFire[i];
+          ef.x += ef.vx * timeScale;
+          ef.y += (ef.vy || 0) * timeScale;
+          if (ef.x >= reachX) {
+            this.game.damageHull(ef.damage);
+            this.createHitSparks(reachX, ef.y, ef.color, 6);
+            this.addDamageTag(reachX, ef.y, `-${ef.damage}`, ef.color, 0.85);
+            this.enemyFire.splice(i, 1);
+          }
+        }
+
+        for (let i = this.lasers.length - 1; i >= 0; i--) {
+          const lz = this.lasers[i];
+          lz.life -= 0.04 * timeScale;
+          if (lz.life <= 0) {
+            this.lasers.splice(i, 1);
+          }
+        }
+
+        for (let i = this.lootDrops.length - 1; i >= 0; i--) {
+          const ld = this.lootDrops[i];
+          ld.x += ld.vx * timeScale;
+
+          if (ld.x >= reachX) {
+            if (ld.type === 'repair') {
+              this.game.healHull(50);
+              this.addDamageTag(reachX, ld.y, "+50 BARRICADE HP", "#10b981", 1.2);
+            } else {
+              this.game.addOverdrive(15);
+              this.addDamageTag(reachX, ld.y, "+15% TESLA COIL", "#ffd600", 1.2);
+            }
+            this.createHitSparks(reachX, ld.y, ld.color, 8);
+            this.game.audio.playCorrect();
+            this.lootDrops.splice(i, 1);
+          }
+        }
+
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const pt = this.particles[i];
+          pt.x += pt.vx * timeScale;
+          pt.y += pt.vy * timeScale;
+          pt.alpha -= pt.decay * timeScale;
+          if (pt.alpha <= 0) {
+            this.particles.splice(i, 1);
+          }
+        }
+
+        for (let i = this.hudDamageTags.length - 1; i >= 0; i--) {
+          const dtg = this.hudDamageTags[i];
+          dtg.y += dtg.vy * timeScale;
+          dtg.alpha -= 0.016 * timeScale;
+          if (dtg.alpha <= 0) {
+            this.hudDamageTags.splice(i, 1);
+          }
+        }
+      }
+
+      draw() {
+        this.ctx.save();
+
+        if (this.screenShake > 0) {
+          const sx = (Math.random() - 0.5) * this.screenShake;
+          const sy = (Math.random() - 0.5) * this.screenShake;
+          this.ctx.translate(sx, sy);
+        }
+
+        this.ctx.clearRect(0, 0, this.width, this.height);
+
+        // Wasteland environment
+        const bgGrad = this.ctx.createLinearGradient(0, 0, 0, this.height);
+        bgGrad.addColorStop(0, '#070a12');
+        bgGrad.addColorStop(0.5, '#0b0f1a');
+        bgGrad.addColorStop(1, '#070a12');
+        this.ctx.fillStyle = bgGrad;
+        this.ctx.fillRect(0, 0, this.width, this.height);
+
+        // Grid lines
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+        this.ctx.lineWidth = 1;
+        for (let x = 0; x < this.width; x += 45) {
+          this.ctx.beginPath(); this.ctx.moveTo(x, 0); this.ctx.lineTo(x, this.height); this.ctx.stroke();
+        }
+        for (let y = 0; y < this.height; y += 45) {
+          this.ctx.beginPath(); this.ctx.moveTo(0, y); this.ctx.lineTo(this.width, y); this.ctx.stroke();
+        }
+
+        // Searchlights
+        const base = this.getBasePosition();
+        this.ctx.save();
+        this.ctx.translate(base.x, base.y);
+        const sweepAngle1 = Math.PI + Math.sin(this.searchlightAngle) * 0.35;
+        const sweepGrad = this.ctx.createRadialGradient(0, 0, 20, Math.cos(sweepAngle1) * this.width * 0.8, Math.sin(sweepAngle1) * this.width * 0.8, this.width * 0.6);
+        sweepGrad.addColorStop(0, 'rgba(245, 158, 11, 0.09)');
+        sweepGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+        this.ctx.fillStyle = sweepGrad;
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, 0);
+        this.ctx.arc(0, 0, this.width * 0.85, sweepAngle1 - 0.25, sweepAngle1 + 0.25);
+        this.ctx.closePath();
+        this.ctx.fill();
+        this.ctx.restore();
+
+        // Combat road
+        const p = this.getPathBounds();
+        const roadGrad = this.ctx.createLinearGradient(0, p.top, 0, p.bottom);
+        roadGrad.addColorStop(0, '#121623');
+        roadGrad.addColorStop(0.5, '#192033');
+        roadGrad.addColorStop(1, '#121623');
+        this.ctx.fillStyle = roadGrad;
+        this.ctx.fillRect(0, p.top, this.width, p.height);
+
+        // Fortified road barricade borders
+        this.ctx.fillStyle = '#1e2638';
+        this.ctx.fillRect(0, p.top - 6, this.width, 6);
+        this.ctx.fillRect(0, p.bottom, this.width, 6);
+
+        // Hazard markings
+        this.ctx.strokeStyle = '#f59e0b';
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([16, 22]);
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, p.top - 3); this.ctx.lineTo(this.width, p.top - 3);
+        this.ctx.moveTo(0, p.bottom + 3); this.ctx.lineTo(this.width, p.bottom + 3);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
+
+        // Fortress Bunker
+        this._drawFortressBunker(this.game.carrierHull, this.game.maxCarrierHull);
+
+        // Tactical Turrets
+        this.playerFighters.forEach(f => {
+          this._drawTacticalTurret(f);
+        });
+
+        // Loot Drops
+        this.lootDrops.forEach(ld => {
+          this.ctx.save();
+          this.ctx.fillStyle = ld.color;
+          this.ctx.shadowColor = ld.color;
+          this.ctx.shadowBlur = 12;
+          this.ctx.beginPath();
+          this.ctx.arc(ld.x, ld.y, 9, 0, Math.PI * 2);
+          this.ctx.fill();
+
+          this.ctx.font = "bold 9px 'Share Tech Mono', monospace";
+          this.ctx.fillStyle = '#ffffff';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText(ld.label, ld.x, ld.y - 12);
+          this.ctx.restore();
+        });
+
+        // Zombies
+        this.enemies.forEach(en => {
+          this._drawEnemyZombie(en);
+        });
+
+        // Lasers
+        this.lasers.forEach(lz => {
+          this.ctx.save();
+          this.ctx.globalAlpha = Math.max(0, lz.life);
+          this.ctx.strokeStyle = lz.color;
+          this.ctx.lineWidth = lz.isCrit ? 4 : 2.5;
+          this.ctx.shadowColor = lz.color;
+          this.ctx.shadowBlur = 12;
+          this.ctx.beginPath();
+          this.ctx.moveTo(lz.fromX, lz.fromY);
+          this.ctx.lineTo(lz.toX, lz.toY);
+          this.ctx.stroke();
+
+          this.ctx.strokeStyle = '#ffffff';
+          this.ctx.lineWidth = 1.2;
+          this.ctx.beginPath();
+          this.ctx.moveTo(lz.fromX, lz.fromY);
+          this.ctx.lineTo(lz.toX, lz.toY);
+          this.ctx.stroke();
+          this.ctx.restore();
+        });
+
+        // Enemy Fire
+        this.enemyFire.forEach(ef => {
+          this.ctx.save();
+          this.ctx.fillStyle = ef.color;
+          this.ctx.shadowColor = ef.color;
+          this.ctx.shadowBlur = 10;
+          this.ctx.beginPath();
+          this.ctx.arc(ef.x, ef.y, 5, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.restore();
+        });
+
+        // Particles
+        this.particles.forEach(pt => {
+          this.ctx.save();
+          this.ctx.fillStyle = pt.color;
+          this.ctx.globalAlpha = pt.alpha;
+          this.ctx.beginPath();
+          this.ctx.arc(pt.x, pt.y, pt.radius, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.restore();
+        });
+
+        // Damage Tags
+        this.hudDamageTags.forEach(dtg => {
+          this.ctx.save();
+          this.ctx.font = `bold ${Math.round(14 * dtg.scale)}px 'Orbitron', monospace`;
+          this.ctx.fillStyle = dtg.color;
+          this.ctx.shadowColor = dtg.color;
+          this.ctx.shadowBlur = 10;
+          this.ctx.globalAlpha = dtg.alpha;
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText(dtg.text, dtg.x, dtg.y);
+          this.ctx.restore();
+        });
+
+        this.ctx.restore();
+      }
+
+      _drawFortressBunker(hp, maxHp) {
+        const base = this.getBasePosition();
+        const hpRatio = Math.max(0, hp / maxHp);
+        const w = 56, h = Math.min(this.height * 0.44, 160);
+        const bx = base.x - w / 2, by = base.y - h / 2;
+
+        const alertColor = hpRatio > 0.5 ? '#10b981' : hpRatio > 0.25 ? '#f59e0b' : '#ef4444';
+
+        this.ctx.save();
+        this.ctx.fillStyle = '#171d2c';
+        this.ctx.strokeStyle = alertColor;
+        this.ctx.lineWidth = 2.5;
+        this.ctx.shadowColor = alertColor;
+        this.ctx.shadowBlur = 14;
+        this.ctx.beginPath();
+        this.ctx.roundRect(bx, by, w, h, 6);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        const teeth = 5;
+        const toothH = (h - 10) / teeth;
+        for (let i = 0; i < teeth; i++) {
+          const sy = by + 5 + i * toothH;
+          this.ctx.fillStyle = '#0a0d15';
+          this.ctx.fillRect(bx + 6, sy + 3, w - 12, toothH * 0.45);
+          this.ctx.strokeStyle = alertColor;
+          this.ctx.lineWidth = 1;
+          this.ctx.strokeRect(bx + 6, sy + 3, w - 12, toothH * 0.45);
+        }
+
+        // Radar dish
+        this.ctx.strokeStyle = '#f59e0b';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(base.x, by - 12, 10, Math.PI * 0.8, Math.PI * 1.8);
+        this.ctx.stroke();
+
+        // Barbed wire
+        this.ctx.strokeStyle = '#718096';
+        this.ctx.lineWidth = 1.5;
+        const wireX = bx - 14;
+        this.ctx.beginPath();
+        for (let y = by; y < by + h; y += 12) {
+          this.ctx.moveTo(wireX - 6, y);
+          this.ctx.lineTo(wireX + 6, y + 8);
+          this.ctx.moveTo(wireX + 6, y);
+          this.ctx.lineTo(wireX - 6, y + 8);
+        }
+        this.ctx.stroke();
+        this.ctx.restore();
+      }
+
+      _drawTacticalTurret(f) {
+        const s = 20;
+        const path = this.getPathBounds();
+        const isAbove = f.y < path.centerY;
+
+        this.ctx.save();
+        this.ctx.fillStyle = '#131826';
+        this.ctx.strokeStyle = f.color;
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.roundRect(f.x - s, f.y - s, s * 2, s * 2, 8);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        this.ctx.save();
+        this.ctx.translate(f.x, f.y);
+        this.ctx.rotate(f.angle);
+
+        this.ctx.fillStyle = f.color;
+        this.ctx.fillRect(4, -5, s * 1.15, 3.5);
+        this.ctx.fillRect(4, 1.5, s * 1.15, 3.5);
+
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillRect(4 + s * 1.15 - 2, -6, 3, 12);
+        this.ctx.restore();
+
+        this.ctx.fillStyle = '#0a0d15';
+        this.ctx.beginPath();
+        this.ctx.arc(f.x, f.y, 8, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.fillStyle = f.color;
+        this.ctx.beginPath();
+        this.ctx.arc(f.x, f.y, 5, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.font = 'bold 9px Orbitron, sans-serif';
+        this.ctx.fillStyle = f.color;
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(f.name.toUpperCase(), f.x, f.y + s + (isAbove ? 12 : -s * 2 - 2));
+
+        this.ctx.restore();
+      }
+
+      _drawEnemyZombie(en) {
+        this.ctx.save();
+        this.ctx.translate(en.x, en.y);
+
+        const isBoss = en.isBoss;
+        const scale = isBoss ? 1.6 : (en.type === 'spitter' ? 1.3 : 1.0);
+        const bodyH = 24 * scale, bodyW = 14 * scale, headR = 7 * scale;
+
+        const walkBob = Math.sin(en.flightTime * 8) * 2;
+
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        this.ctx.beginPath();
+        this.ctx.ellipse(0, bodyH * 0.5 + 4, bodyW * 0.75, 4, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        let skinColor = isBoss ? '#4c1d95' : (en.type === 'spitter' ? '#047857' : (en.type === 'runner' ? '#b91c1c' : '#27472e'));
+
+        this.ctx.fillStyle = skinColor;
+        this.ctx.beginPath();
+        this.ctx.roundRect(-bodyW / 2, -bodyH / 2 + walkBob, bodyW, bodyH * 0.85, 4);
+        this.ctx.fill();
+
+        this.ctx.beginPath();
+        this.ctx.arc(0, -bodyH / 2 - headR + 2 + walkBob, headR, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.fillStyle = isBoss ? '#fbbf24' : '#ef4444';
+        this.ctx.beginPath();
+        this.ctx.arc(-headR * 0.35, -bodyH / 2 - headR + 2 + walkBob, 1.8 * scale, 0, Math.PI * 2);
+        this.ctx.arc(headR * 0.35, -bodyH / 2 - headR + 2 + walkBob, 1.8 * scale, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        const hpPct = Math.max(0, en.hp / en.maxHp);
+        const barW = Math.max(26, bodyW * 1.5);
+        const barH = 4;
+        const barY = -bodyH - headR - 8 + walkBob;
+
+        this.ctx.fillStyle = '#090d15';
+        this.ctx.fillRect(-barW / 2, barY, barW, barH);
+        this.ctx.fillStyle = hpPct > 0.4 ? '#10b981' : '#ef4444';
+        this.ctx.fillRect(-barW / 2, barY, barW * hpPct, barH);
+
+        this.ctx.font = "bold 9px 'Share Tech Mono', monospace";
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(`${en.hp} HP`, 0, barY - 2);
+
+        this.ctx.restore();
+      }
+    }
+
+    /* ============================================================
+       4. COCKPIT AVIONICS QUIZ STATIONS (2-4 TEAMS SIMULTANEOUS)
+       ============================================================ */
+    class CockpitQuizStation {
+      constructor(container, game) {
+        this.container = container;
+        this.game = game;
+        this.stations = [];
+      }
+
+      init(numTeams, teamNames, timerSeconds) {
+        this.container.innerHTML = '';
+        this.container.className = `cockpit-dock teams-${numTeams}`;
+        this.stations = [];
+
+        const defaultNames = ['AEGIS-1', 'PHOENIX-2', 'VOLT-3', 'TITAN-4'];
+        const classes = ['VANGUARD', 'PYRO', 'SNIPER', 'COMMANDO'];
+        const colors = ['#f43f5e', '#0284c7', '#10b981', '#eab308'];
+
+        for (let i = 0; i < numTeams; i++) {
+          const name = (teamNames && teamNames[i]) || defaultNames[i];
+          const panel = document.createElement('div');
+          panel.className = `station-panel p${i}`;
+
+          panel.innerHTML = `
+            <div class="cockpit-header">
+              <div class="squadron-tag">
+                <span class="squadron-name" style="color: ${colors[i]};">${name}</span>
+                <span class="squadron-class-label">// ${classes[i]}</span>
+              </div>
+              <div class="cockpit-stats">
+                <span class="stats-streak" id="streak-${i}">🔥 0x</span>
+                <span class="stats-score" id="score-${i}" style="color: ${colors[i]};">0 PTS</span>
+              </div>
+            </div>
+            <div class="radar-timer-track">
+              <div class="radar-timer-fill" id="timerBar-${i}" style="width: 100%;"></div>
+            </div>
+            <div class="cockpit-deck">
+              <div class="avionics-meta-row">
+                <span class="topic-badge" id="topic-${i}">IPS LITERASI FINANSIAL</span>
+                <span class="weapon-ready-tag" id="weaponStatus-${i}">WEAPON: READY</span>
+              </div>
+              <div class="cockpit-question" id="quest-${i}">Menghubungkan stasiun pertahanan...</div>
+              <div class="fire-options-grid" id="optGrid-${i}"></div>
+            </div>
+          `;
+
+          this.container.appendChild(panel);
+
+          const stationData = {
+            idx: i,
+            el: panel,
+            name,
+            color: colors[i],
+            currentQuestion: null,
+            timerSeconds,
+            timeLeft: timerSeconds,
+            timerInterval: null,
+            answered: 0,
+            correct: 0,
+            streak: 0,
+            locked: false
+          };
+
+          this.stations.push(stationData);
+          this.loadNextTargetQuestion(stationData);
+        }
+      }
+
+      loadNextTargetQuestion(st) {
+        if (this.game.isGameOver) return;
+        st.locked = false;
+        st.timeLeft = st.timerSeconds;
+
+        const qIdx = Math.floor(Math.random() * QUESTIONS_BANK.length);
+        st.currentQuestion = QUESTIONS_BANK[qIdx];
+
+        const topicEl = document.getElementById(`topic-${st.idx}`);
+        const questEl = document.getElementById(`quest-${st.idx}`);
+        const optGrid = document.getElementById(`optGrid-${st.idx}`);
+        const timerBar = document.getElementById(`timerBar-${st.idx}`);
+        const weaponTag = document.getElementById(`weaponStatus-${st.idx}`);
+
+        if (topicEl) topicEl.textContent = st.currentQuestion.topic || 'IPS LITERASI FINANSIAL';
+        if (questEl) questEl.textContent = st.currentQuestion.question;
+        if (weaponTag) weaponTag.textContent = st.streak >= 3 ? '⚡ CRIT CHARGE 100%' : 'WEAPON: READY';
+
+        if (timerBar) {
+          timerBar.style.width = '100%';
+          timerBar.style.backgroundColor = '#f59e0b';
+        }
+
+        if (optGrid) {
+          optGrid.innerHTML = '';
+          const keys = ['A', 'B', 'C', 'D'];
+          st.currentQuestion.options.forEach((optText, optIdx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'fire-btn';
+            btn.innerHTML = `<span class="fire-key">${keys[optIdx]}</span> <span>${optText}</span>`;
+
+            const triggerFire = (e) => {
+              e.preventDefault();
+              if (st.locked || this.game.isGameOver) return;
+              this.handleAnswerFire(st, optIdx, btn);
+            };
+
+            btn.addEventListener('touchstart', triggerFire, { passive: false });
+            btn.addEventListener('click', triggerFire);
+
+            optGrid.appendChild(btn);
+          });
+        }
+
+        this._startTimer(st);
+      }
+
+      _startTimer(st) {
+        if (st.timerInterval) clearInterval(st.timerInterval);
+
+        st.timerInterval = setInterval(() => {
+          if (this.game.isGameOver) {
+            clearInterval(st.timerInterval);
+            return;
+          }
+
+          st.timeLeft -= 0.1;
+          const pct = Math.max(0, (st.timeLeft / st.timerSeconds) * 100);
+          const timerBar = document.getElementById(`timerBar-${st.idx}`);
+          if (timerBar) {
+            timerBar.style.width = `${pct}%`;
+            if (pct < 28) timerBar.style.backgroundColor = '#ef4444';
+            else if (pct < 55) timerBar.style.backgroundColor = '#ffd600';
+          }
+
+          if (st.timeLeft <= 0) {
+            clearInterval(st.timerInterval);
+            this.handleTimeout(st);
+          }
+        }, 100);
+      }
+
+      handleAnswerFire(st, selectedIdx, btn) {
+        st.locked = true;
+        if (st.timerInterval) clearInterval(st.timerInterval);
+
+        st.answered++;
+        const isCorrect = selectedIdx === st.currentQuestion.answer;
+
+        if (isCorrect) {
+          st.correct++;
+          st.streak++;
+          btn.classList.add('hit');
+          st.el.classList.add('flash-fire');
+          setTimeout(() => st.el.classList.remove('flash-fire'), 500);
+
+          this.game.audio.playCorrect();
+
+          const isCrit = (st.timerSeconds - st.timeLeft < 3.2) || (st.streak >= 3);
+          this.game.combat.fireSquadronWeapon(st.idx, isCrit);
+
+          const streakEl = document.getElementById(`streak-${st.idx}`);
+          if (streakEl) streakEl.textContent = `🔥 ${st.streak}x`;
+        } else {
+          st.streak = 0;
+          btn.classList.add('miss');
+          st.el.classList.add('flash-miss');
+          setTimeout(() => st.el.classList.remove('flash-miss'), 500);
+
+          this.game.audio.playWrong();
+
+          const streakEl = document.getElementById(`streak-${st.idx}`);
+          if (streakEl) streakEl.textContent = `🔥 0x`;
+        }
+
+        setTimeout(() => {
+          this.loadNextTargetQuestion(st);
+        }, 750);
+      }
+
+      handleTimeout(st) {
+        st.locked = true;
+        st.streak = 0;
+        st.answered++;
+
+        st.el.classList.add('flash-miss');
+        setTimeout(() => st.el.classList.remove('flash-miss'), 500);
+        this.game.audio.playWrong();
+
+        const streakEl = document.getElementById(`streak-${st.idx}`);
+        if (streakEl) streakEl.textContent = `🔥 0x`;
+
+        setTimeout(() => {
+          this.loadNextTargetQuestion(st);
+        }, 750);
+      }
+
+      updateScoreDOM(teamIdx, score) {
+        const scoreEl = document.getElementById(`score-${teamIdx}`);
+        if (scoreEl) scoreEl.textContent = `${score} PTS`;
+      }
+
+      stopAll() {
+        this.stations.forEach(s => {
+          if (s.timerInterval) clearInterval(s.timerInterval);
+          s.locked = true;
+        });
+      }
+    }
+
+    /* ============================================================
+       5. MAIN ZOMBIE GAME CONTROLLER
+       ============================================================ */
+    class AerostrikeGame {
+      constructor() {
+        this.teamCount = 4;
+        this.difficulty = 'normal';
+        this.teamNames = ['Aegis Vanguard', 'Phoenix Pyro', 'Volt Sniper', 'Titan Commando'];
+
+        this.teamScores = [0, 0, 0, 0];
+        this.teamDamage = [0, 0, 0, 0];
+        this.teamKills = [0, 0, 0, 0];
+        this.teamBossKills = [0, 0, 0, 0];
+
+        this.currentSector = 1;
+        this.maxSector = 5;
+        this.carrierHull = 1000;
+        this.maxCarrierHull = 1000;
+        this.overdriveMeter = 0;
+        this.isGameOver = false;
+
+        this.audio = new DogfightAudio();
+        this.combat = new OutpostRenderer(document.getElementById('combatCanvas'), this);
+        this.quiz = new CockpitQuizStation(document.getElementById('cockpitDock'), this);
+
+        this.animFrameId = null;
+        this.lastTime = 0;
+
+        this._bindEvents();
+        this._renderSquadronInputs();
+        this._initHangarBackground();
+      }
+
+      _initHangarBackground() {
+        const c = document.getElementById('hangarCanvas');
+        if (!c) return;
+        const ctx = c.getContext('2d');
+        let w = c.width = window.innerWidth;
+        let h = c.height = window.innerHeight;
+        window.addEventListener('resize', () => {
+          w = c.width = window.innerWidth;
+          h = c.height = window.innerHeight;
+        });
+
+        const dots = [];
+        for (let i = 0; i < 90; i++) {
+          dots.push({ x: Math.random() * w, y: Math.random() * h, s: Math.random() * 1.5 + 0.5, vy: Math.random() * 0.8 + 0.2 });
+        }
+
+        function drawHangar() {
+          ctx.clearRect(0, 0, w, h);
+          ctx.fillStyle = 'rgba(245, 158, 11, 0.35)';
+          dots.forEach(d => {
+            d.y += d.vy;
+            if (d.y > h) d.y = 0;
+            ctx.fillRect(d.x, d.y, d.s, d.s);
+          });
+          requestAnimationFrame(drawHangar);
+        }
+        drawHangar();
+      }
+
+      _bindEvents() {
+        document.querySelectorAll('.select-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.select-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.teamCount = parseInt(btn.getAttribute('data-teams'), 10);
+            this._renderSquadronInputs();
+          });
+        });
+
+        document.querySelectorAll('.diff-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.difficulty = btn.getAttribute('data-diff');
+          });
+        });
+
+        document.getElementById('btnLaunchFlight').addEventListener('click', () => {
+          this.startGame();
+        });
+
+        document.getElementById('btnPlayAgain').addEventListener('click', () => {
+          this.showScreen('setup-screen');
+        });
+
+        document.getElementById('btnToggleAudio').addEventListener('click', () => {
+          this.audio.enabled = !this.audio.enabled;
+          document.getElementById('btnToggleAudio').textContent = this.audio.enabled ? '🔊' : '🔇';
+        });
+
+        document.getElementById('btnToggleFullscreen').addEventListener('click', () => {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        });
+      }
+
+      _renderSquadronInputs() {
+        const container = document.getElementById('squadronsList');
+        container.innerHTML = '';
+        const defaultNames = ['AEGIS-1', 'PHOENIX-2', 'VOLT-3', 'TITAN-4'];
+        const classes = ['VANGUARD', 'PYRO', 'SNIPER', 'COMMANDO'];
+        const colors = ['#f43f5e', '#0284c7', '#10b981', '#eab308'];
+
+        for (let i = 0; i < this.teamCount; i++) {
+          const slot = document.createElement('div');
+          slot.className = 'squadron-slot';
+          slot.style.borderColor = colors[i];
+
+          slot.innerHTML = `
+            <div class="squadron-slot-header">
+              <span style="color: ${colors[i]}; font-weight: 800;">SQUAD 0${i + 1}</span>
+              <span class="squadron-class">${classes[i]}</span>
+            </div>
+            <input type="text" id="inputSquadron-${i}" class="squadron-input" value="${this.teamNames[i] || defaultNames[i]}" maxlength="16">
+          `;
+          container.appendChild(slot);
+        }
+      }
+
+      _readSquadronInputs() {
+        this.teamNames = [];
+        for (let i = 0; i < this.teamCount; i++) {
+          const input = document.getElementById(`inputSquadron-${i}`);
+          this.teamNames.push(input && input.value.trim() ? input.value.trim() : `SQUAD ${i + 1}`);
+        }
+      }
+
+      showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(screenId);
+        if (target) target.classList.add('active');
+      }
+
+      _applyDifficulty() {
+        if (this.difficulty === 'easy') {
+          this.maxCarrierHull = 1500;
+          this.timerSeconds = 30;
+          this.sectorDefs = [
+            { count: 5, delay: 3500, types: ['walker'] },
+            { count: 8, delay: 3000, types: ['walker', 'runner'] },
+            { count: 10, delay: 2600, types: ['runner', 'walker'] },
+            { count: 12, delay: 2400, types: ['runner', 'spitter'] },
+            { count: 15, delay: 2000, types: ['runner', 'spitter'], bossCount: 1 }
+          ];
+        } else if (this.difficulty === 'hard') {
+          this.maxCarrierHull = 1200;
+          this.timerSeconds = 15;
+          this.sectorDefs = [
+            { count: 14, delay: 1300, types: ['walker', 'runner'] },
+            { count: 22, delay: 1100, types: ['runner', 'spitter'] },
+            { count: 30, delay: 950,  types: ['walker', 'runner', 'spitter'] },
+            { count: 42, delay: 800,  types: ['spitter', 'runner'] },
+            { count: 58, delay: 650,  types: ['spitter', 'runner'], bossCount: 2 }
+          ];
+        } else {
+          this.maxCarrierHull = 1000;
+          this.timerSeconds = 20;
+          this.sectorDefs = [
+            { count: 8,  delay: 2200, types: ['walker', 'runner'] },
+            { count: 14, delay: 1800, types: ['walker', 'runner'] },
+            { count: 20, delay: 1400, types: ['runner', 'spitter'] },
+            { count: 26, delay: 1150, types: ['spitter', 'runner'] },
+            { count: 35, delay: 950,  types: ['spitter', 'runner'], bossCount: 1 }
+          ];
+        }
+
+        this.carrierHull = this.maxCarrierHull;
+      }
+
+      startGame() {
+        this._readSquadronInputs();
+        this._applyDifficulty();
+
+        this.teamScores = [0, 0, 0, 0];
+        this.teamDamage = [0, 0, 0, 0];
+        this.teamKills = [0, 0, 0, 0];
+        this.teamBossKills = [0, 0, 0, 0];
+        this.currentSector = 1;
+        this.overdriveMeter = 0;
+        this.isGameOver = false;
+
+        this.combat.enemies = [];
+        this.combat.lasers = [];
+        this.combat.enemyFire = [];
+        this.combat.lootDrops = [];
+        this.combat.particles = [];
+        this.combat.hudDamageTags = [];
+
+        this.updateHullHUD();
+        this.updateOverdriveHUD();
+
+        document.getElementById('hudDiffLabel').textContent = `${this.difficulty.toUpperCase()} FLIGHT`;
+
+        this.showScreen('game-screen');
+        this.combat.resize();
+        this.combat.setupFighters(this.teamCount, this.teamNames);
+        this.quiz.init(this.teamCount, this.teamNames, this.timerSeconds);
+
+        this.lastTime = performance.now();
+        if (this.animFrameId) cancelAnimationFrame(this.animFrameId);
+        this._gameLoop = this._gameLoop.bind(this);
+        this.animFrameId = requestAnimationFrame(this._gameLoop);
+
+        this.startSector(1);
+      }
+
+      startSector(sectorNum) {
+        this.currentSector = sectorNum;
+        document.getElementById('hudSectorBadge').textContent = `WAVE ${this.currentSector} / ${this.maxSector}`;
+
+        const sIdx = Math.min(sectorNum - 1, this.sectorDefs.length - 1);
+        const config = this.sectorDefs[sIdx];
+        let enemiesToSpawn = config.count;
+
+        const isBossSector = (config.bossCount || 0) > 0;
+        this.showAlert(
+          isBossSector ? `☣️ WAVE 0${sectorNum} TITAN BEHEMOTH` : `INCOMING ZOMBIE WAVE: WAVE 0${sectorNum}`,
+          isBossSector ? 'Mutan raksasa mendekati barikade sangtuari!' : 'Gelombang zombie terdeteksi di jalan, buka tembakan!',
+          isBossSector ? '#ffd600' : '#f59e0b'
+        );
+
+        if (this.sectorSpawnTimer) clearInterval(this.sectorSpawnTimer);
+
+        this.sectorSpawnTimer = setInterval(() => {
+          if (this.isGameOver) {
+            clearInterval(this.sectorSpawnTimer);
+            return;
+          }
+
+          if (enemiesToSpawn > 0) {
+            const types = config.types;
+            const chosen = types[Math.floor(Math.random() * types.length)];
+            this.combat.spawnEnemy(chosen, this.currentSector);
+            enemiesToSpawn--;
+          } else {
+            if (config.bossCount > 0) {
+              for (let b = 0; b < config.bossCount; b++) {
+                this.combat.spawnEnemy('behemoth_boss', this.currentSector);
+              }
+              config.bossCount = 0;
+            }
+
+            if (this.combat.enemies.length === 0) {
+              clearInterval(this.sectorSpawnTimer);
+              this._handleSectorClear();
+            }
+          }
+        }, config.delay);
+      }
+
+      _handleSectorClear() {
+        if (this.currentSector < this.maxSector) {
+          const heal = this.difficulty === 'easy' ? 350 : 200;
+          this.showAlert(`WAVE 0${this.currentSector} CLEARED!`, `Bunker Barricade diperbaiki +${heal} HP!`, '#10b981');
+          this.healHull(heal);
+
+          setTimeout(() => {
+            if (!this.isGameOver) {
+              this.startSector(this.currentSector + 1);
+            }
+          }, 3200);
+        } else {
+          this.endGame(true);
+        }
+      }
+
+      showAlert(title, sub, color = '#f59e0b') {
+        const alertBox = document.getElementById('flightAlert');
+        const tEl = document.getElementById('flightAlertTitle');
+        const sEl = document.getElementById('flightAlertSub');
+
+        tEl.textContent = title;
+        tEl.style.color = color;
+        sEl.textContent = sub;
+        alertBox.style.borderColor = color;
+
+        alertBox.classList.add('show');
+        setTimeout(() => {
+          alertBox.classList.remove('show');
+        }, 2500);
+      }
+
+      damageHull(amount) {
+        this.carrierHull = Math.max(0, this.carrierHull - amount);
+        this.updateHullHUD();
+
+        if (this.carrierHull <= 0 && !this.isGameOver) {
+          this.endGame(false);
+        }
+      }
+
+      healHull(amount) {
+        this.carrierHull = Math.min(this.maxCarrierHull, this.carrierHull + amount);
+        this.updateHullHUD();
+      }
+
+      addOverdrive(amount) {
+        this.overdriveMeter = Math.min(100, this.overdriveMeter + amount);
+        this.updateOverdriveHUD();
+
+        if (this.overdriveMeter >= 100) {
+          this.overdriveMeter = 0;
+          this.updateOverdriveHUD();
+          this.combat.triggerOverdriveBarrage();
+        }
+      }
+
+      updateHullHUD() {
+        const fill = document.getElementById('hudHullFill');
+        const txt = document.getElementById('hudHullText');
+        const pct = Math.max(0, (this.carrierHull / this.maxCarrierHull) * 100);
+
+        fill.style.width = `${pct}%`;
+        txt.textContent = `${Math.ceil(this.carrierHull)} / ${this.maxCarrierHull} HP`;
+
+        if (pct < 28) fill.classList.add('danger');
+        else fill.classList.remove('danger');
+      }
+
+      updateOverdriveHUD() {
+        const fill = document.getElementById('hudOverdriveFill');
+        const txt = document.getElementById('hudOverdriveText');
+        fill.style.width = `${this.overdriveMeter}%`;
+        txt.textContent = `TESLA COIL: ${Math.round(this.overdriveMeter)}%`;
+      }
+
+      recordDamage(teamIdx, amount) {
+        this.teamDamage[teamIdx] += amount;
+        this.teamScores[teamIdx] += amount;
+        this.quiz.updateScoreDOM(teamIdx, this.teamScores[teamIdx]);
+        this.updateTopScoreHUD();
+      }
+
+      recordKill(teamIdx, isBoss) {
+        this.teamKills[teamIdx]++;
+        const bonus = isBoss ? 500 : 100;
+        if (isBoss) this.teamBossKills[teamIdx]++;
+        this.teamScores[teamIdx] += bonus;
+        this.quiz.updateScoreDOM(teamIdx, this.teamScores[teamIdx]);
+        this.updateTopScoreHUD();
+      }
+
+      updateTopScoreHUD() {
+        let maxScore = -1;
+        let topName = '';
+        for (let i = 0; i < this.teamCount; i++) {
+          if (this.teamScores[i] > maxScore) {
+            maxScore = this.teamScores[i];
+            topName = this.teamNames[i];
+          }
+        }
+        document.getElementById('hudTopScore').textContent = `ACE: ${topName} (${maxScore} PTS)`;
+      }
+
+      _gameLoop(time) {
+        const dt = (time - this.lastTime) / 1000;
+        this.lastTime = time;
+
+        if (!this.isGameOver) {
+          this.combat.update(dt);
+          this.combat.draw();
+          this.animFrameId = requestAnimationFrame(this._gameLoop);
+        }
+      }
+
+      endGame(victory) {
+        this.isGameOver = true;
+        if (this.sectorSpawnTimer) clearInterval(this.sectorSpawnTimer);
+        this.quiz.stopAll();
+
+        if (victory) this.audio.playVictory();
+        else this.audio.playDefeat();
+
+        setTimeout(() => {
+          this._showDebriefing(victory);
+        }, 1600);
+      }
+
+      _showDebriefing(victory) {
+        this.showScreen('results-screen');
+
+        const title = document.getElementById('resultsTitle');
+        const sub = document.getElementById('resultsSubtitle');
+        const diffLabel = this.difficulty.toUpperCase();
+
+        if (victory) {
+          title.textContent = '🏆 OUTPOST SECURED!';
+          title.style.color = '#f59e0b';
+          sub.innerHTML = `🛡️ Bunker Barricade Tersisa: <strong>${Math.ceil(this.carrierHull)} HP</strong> | Seluruh Tim Berhasil Mempertahankan Sangtuari (${diffLabel})`;
+        } else {
+          title.textContent = '💀 BARRICADE BREACHED!';
+          title.style.color = '#ef4444';
+          sub.innerHTML = `Benteng sangtuari jebol di Wave 0${this.currentSector} | Seluruh tim mundur ke bunker dalam (${diffLabel})`;
+        }
+
+        const colors = ['#f43f5e', '#0284c7', '#10b981', '#eab308'];
+        const ranks = ['🥇', '🥈', '🥉', '4️⃣'];
+
+        const sorted = this.teamNames.slice(0, this.teamCount).map((name, i) => {
+          const st = this.quiz.stations[i] || { correct: 0, answered: 0 };
+          const acc = st.answered > 0 ? Math.round((st.correct / st.answered) * 100) : 0;
+          return {
+            name, idx: i,
+            score: this.teamScores[i],
+            damage: this.teamDamage[i],
+            kills: this.teamKills[i],
+            bossKills: this.teamBossKills[i],
+            correct: st.correct,
+            answered: st.answered,
+            accuracy: acc
+          };
+        }).sort((a, b) => b.score - a.score);
+
+        const grid = document.getElementById('podiumGrid');
+        grid.innerHTML = '';
+
+        sorted.forEach((t, i) => {
+          const card = document.createElement('div');
+          card.className = `podium-card ${i === 0 ? 'ace' : ''}`;
+          card.style.borderColor = colors[t.idx];
+
+          card.innerHTML = `
+            <div class="podium-rank">${ranks[i]}</div>
+            <div class="podium-name" style="color:${colors[t.idx]};">${t.name}</div>
+            <div class="podium-score" style="color:${colors[t.idx]};">${t.score} PTS</div>
+            <div class="podium-stats-box">
+              💥 Total Damage: <strong>${t.damage}</strong><br>
+              🎯 Akurasi HOTS IPS: <strong>${t.accuracy}%</strong> (${t.correct}/${t.answered})<br>
+              🧟 Mutants Neutralized: <strong>${t.kills}</strong><br>
+              ☣️ Titan Behemoths Down: <strong>${t.bossKills}</strong>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      window.aerostrikeGame = new AerostrikeGame();
+    });
+  </script>
+</body>
+</html>

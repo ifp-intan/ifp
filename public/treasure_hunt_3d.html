@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Roblox 3D: Perburuan Harta Karun Berpikir Komputasional (Multiplayer)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <!-- Three.js & PeerJS CDNs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #070B14;
+      --panel: #0F172A;
+      --border: rgba(56, 189, 248, 0.3);
+      --primary: #38BDF8;
+      --primary-grad: linear-gradient(135deg, #0284C7 0%, #2563EB 100%);
+      --gold: #F59E0B;
+      --gold-grad: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+      --emerald: #10B981;
+      --rose: #F43F5E;
+      --text: #F8FAFC;
+      --muted: #94A3B8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+    body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    /* Canvas 3D Viewport */
+    #canvas3d { width: 100%; height: 100%; display: block; position: absolute; inset: 0; z-index: 1; }
+
+    /* UI Overlay Layer */
+    .ui-layer { position: absolute; inset: 0; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; }
+    .interactive { pointer-events: auto; }
+
+    /* Modal Backdrop & Cards */
+    .modal-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(7, 11, 20, 0.92); backdrop-filter: blur(16px); display: flex; align-items: center; justify-content: center; padding: 20px; pointer-events: auto; }
+    .modal-card { background: #0F172A; border: 1.5px solid var(--border); border-radius: 20px; width: 100%; max-width: 540px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8), 0 0 35px rgba(56, 189, 248, 0.2); display: flex; flex-direction: column; gap: 18px; text-align: center; }
+
+    .game-logo-box { width: 64px; height: 64px; border-radius: 16px; background: var(--gold-grad); margin: 0 auto; display: grid; place-items: center; font-size: 32px; box-shadow: 0 0 24px rgba(245, 158, 11, 0.5); }
+    .modal-title { font-size: 1.35rem; font-weight: 800; color: #FFF; letter-spacing: -0.01em; }
+    .modal-subtitle { font-size: 0.82rem; color: var(--muted); line-height: 1.45; }
+
+    .input-group { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+    .input-label { font-size: 0.78rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; }
+    .ui-input { background: #1E293B; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 16px; color: #FFF; font-size: 0.95rem; outline: none; font-family: inherit; transition: all 0.2s; }
+    .ui-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25); }
+
+    /* Avatar Selection Grid */
+    .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .avatar-btn { background: #1E293B; border: 2px solid var(--border); border-radius: 12px; padding: 12px 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: all 0.2s; }
+    .avatar-btn.selected { border-color: var(--gold); background: rgba(245, 158, 11, 0.15); box-shadow: 0 0 16px rgba(245, 158, 11, 0.3); }
+    .avatar-dot { width: 24px; height: 24px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
+
+    /* Buttons */
+    .ui-btn { background: var(--primary-grad); color: #FFF; border: none; padding: 14px 24px; border-radius: 12px; font-weight: 800; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4); }
+    .ui-btn:hover { transform: translateY(-2px); opacity: 0.95; }
+    .ui-btn-gold { background: var(--gold-grad); box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4); }
+    .ui-btn-rose { background: linear-gradient(135deg, #E11D48 0%, #F43F5E 100%); box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4); }
+    .ui-btn-outline { background: transparent; border: 1.5px solid var(--border); color: #FFF; box-shadow: none; }
+    .ui-btn-outline:hover { border-color: var(--primary); background: rgba(56, 189, 248, 0.1); }
+
+    /* HUD Bar Top */
+    .hud-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    .hud-card { background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border); backdrop-filter: blur(12px); border-radius: 14px; padding: 12px 18px; display: flex; align-items: center; gap: 14px; }
+
+    .token-badge { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; color: var(--gold); background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); padding: 4px 12px; border-radius: 8px; }
+
+    /* Player HP Bar */
+    .hp-bar-outer { width: 140px; height: 12px; background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .hp-bar-inner { width: 100%; height: 100%; background: linear-gradient(90deg, #10B981, #059669); transition: width 0.3s ease; }
+
+    /* Keys Tracker */
+    .keys-tracker { display: flex; gap: 8px; }
+    .key-slot { width: 36px; height: 36px; border-radius: 10px; background: rgba(30, 41, 59, 0.8); border: 1.5px solid var(--border); display: grid; place-items: center; font-size: 16px; opacity: 0.4; transition: all 0.3s; }
+    .key-slot.collected { opacity: 1; border-color: var(--gold); background: rgba(245, 158, 11, 0.2); box-shadow: 0 0 12px rgba(245, 158, 11, 0.5); }
+
+    /* Roblox Action Controls Panel */
+    .controls-panel { display: flex; gap: 10px; align-items: center; }
+    .action-btn { width: 56px; height: 56px; border-radius: 16px; background: rgba(15, 23, 42, 0.85); border: 2px solid var(--border); color: #FFF; font-size: 1.2rem; font-weight: 800; display: grid; place-items: center; cursor: pointer; backdrop-filter: blur(8px); transition: all 0.15s; }
+    .action-btn:active { transform: scale(0.92); border-color: var(--gold); }
+
+    /* Touch Joystick for Mobile / IFP */
+    .joystick-zone { width: 120px; height: 120px; border-radius: 50%; background: rgba(15, 23, 42, 0.6); border: 2px solid var(--border); backdrop-filter: blur(8px); position: relative; display: flex; align-items: center; justify-content: center; touch-action: none; }
+    .joystick-knob { width: 50px; height: 50px; border-radius: 50%; background: var(--primary-grad); position: absolute; box-shadow: 0 0 15px rgba(56, 189, 248, 0.5); transition: transform 0.05s ease-out; }
+
+    /* Toast Notification */
+    .toast-pill { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); background: rgba(16, 185, 129, 0.92); color: #FFF; padding: 10px 20px; border-radius: 30px; font-weight: 700; font-size: 0.85rem; backdrop-filter: blur(8px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: none; z-index: 200; }
+
+    /* Quiz Modal Card */
+    .door-quiz-card { background: #0F172A; border: 2px solid var(--primary); border-radius: 20px; max-width: 620px; width: 100%; padding: 28px; box-shadow: 0 0 40px rgba(56, 189, 248, 0.3); display: flex; flex-direction: column; gap: 16px; text-align: left; }
+    .door-badge { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 800; color: var(--gold); background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); padding: 4px 12px; border-radius: 20px; width: fit-content; }
+    .quiz-options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+    .quiz-opt-btn { background: #1E293B; border: 1.5px solid var(--border); border-radius: 12px; padding: 14px 18px; color: #FFF; font-size: 0.88rem; font-weight: 600; text-align: left; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between; line-height: 1.4; }
+    .quiz-opt-btn:hover { border-color: var(--primary); background: rgba(56, 189, 248, 0.1); }
+
+    /* Victory Card */
+    .victory-card { background: #0F172A; border: 2px solid var(--gold); border-radius: 24px; padding: 36px; max-width: 580px; width: 100%; text-align: center; box-shadow: 0 0 50px rgba(245, 158, 11, 0.4); display: flex; flex-direction: column; gap: 20px; }
+    .stats-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+    .stats-table th, .stats-table td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
+    .stats-table th { color: var(--primary); font-size: 0.75rem; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+  <!-- Three.js 3D Canvas -->
+  <canvas id="canvas3d"></canvas>
+
+  <!-- HUD Overlay Layer -->
+  <div class="ui-layer">
+    <!-- HUD Top Bar -->
+    <div class="hud-top">
+      <div class="hud-card interactive">
+        <div>
+          <div style="font-size: 0.68rem; color: var(--muted); font-weight: 700;">TOKEN RUANGAN ROBLOX</div>
+          <div class="token-badge" id="hudToken">CT-4902</div>
+        </div>
+
+        <div>
+          <div style="font-size: 0.68rem; color: var(--muted); font-weight: 700; margin-bottom: 3px;">NYAWA (HP)</div>
+          <div class="hp-bar-outer">
+            <div class="hp-bar-inner" id="hpBar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-card interactive">
+        <div>
+          <div style="font-size: 0.68rem; color: var(--muted); font-weight: 700; margin-bottom: 4px;">KUNCI PILAR KOMPUTASI</div>
+          <div class="keys-tracker">
+            <div class="key-slot" id="slot-1" title="Dekomposisi">🧩</div>
+            <div class="key-slot" id="slot-2" title="Pengenalan Pola">🔍</div>
+            <div class="key-slot" id="slot-3" title="Abstraksi">🕵️</div>
+            <div class="key-slot" id="slot-4" title="Algoritma">⚡</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HUD Bottom Bar: Controls & Joystick -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
+      <div class="joystick-zone interactive" id="joystickZone">
+        <div class="joystick-knob" id="joystickKnob"></div>
+      </div>
+
+      <div class="controls-panel interactive">
+        <button type="button" class="action-btn" title="Lompat (Spacebar)" onclick="triggerJump()">🦘</button>
+        <button type="button" class="action-btn" title="Serang Musuh (Klik Kiri / F)" onclick="triggerAttack()">⚔️</button>
+        <button type="button" class="action-btn" title="Lari Cepat (Shift)" id="sprintBtn" onclick="toggleSprint()">⚡</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Pill -->
+  <div class="toast-pill" id="toastPill">🔑 Kunci Pilar Dekomposisi Didapatkan!</div>
+
+  <!-- LOBBY MODAL SCREEN -->
+  <div class="modal-backdrop" id="lobbyModal">
+    <div class="modal-card">
+      <div class="game-logo-box">🏛️</div>
+      <div>
+        <h1 class="modal-title">ROBLOX 3D: PERBURUAN HARTA KARUN KOMPUTASI</h1>
+        <p class="modal-subtitle">Petualangan Obby Labirin, Pertempuran Musuh &amp; Kuis HOTS Real-Time</p>
+      </div>
+
+      <!-- Player Name Input -->
+      <div class="input-group">
+        <label for="playerName" class="input-label">Nama Pemain / Tim</label>
+        <input type="text" id="playerName" class="ui-input" value="Pemain Roblox 1" placeholder="Masukkan nama Anda...">
+      </div>
+
+      <!-- Avatar Color Picker -->
+      <div class="input-group">
+        <label class="input-label">Pilih Warna Avatar Roblox</label>
+        <div class="avatar-grid">
+          <div class="avatar-btn selected" onclick="selectAvatar('red', '#EF4444', this)">
+            <div class="avatar-dot" style="background: #EF4444; color: #EF4444;"></div>
+            <span style="font-size: 0.75rem; font-weight: 700;">Merah</span>
+          </div>
+          <div class="avatar-btn" onclick="selectAvatar('blue', '#3B82F6', this)">
+            <div class="avatar-dot" style="background: #3B82F6; color: #3B82F6;"></div>
+            <span style="font-size: 0.75rem; font-weight: 700;">Biru</span>
+          </div>
+          <div class="avatar-btn" onclick="selectAvatar('green', '#10B981', this)">
+            <div class="avatar-dot" style="background: #10B981; color: #10B981;"></div>
+            <span style="font-size: 0.75rem; font-weight: 700;">Hijau</span>
+          </div>
+          <div class="avatar-btn" onclick="selectAvatar('yellow', '#F59E0B', this)">
+            <div class="avatar-dot" style="background: #F59E0B; color: #F59E0B;"></div>
+            <span style="font-size: 0.75rem; font-weight: 700;">Kuning</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room Action Tabs -->
+      <div style="display: flex; gap: 10px;">
+        <button type="button" class="ui-btn ui-btn-gold" style="flex: 1;" onclick="createRoom()">🏛️ Buat Ruangan Baru</button>
+        <button type="button" class="ui-btn ui-btn-outline" style="flex: 1;" onclick="showJoinInput()">🔑 Gabung Ruangan</button>
+      </div>
+
+      <!-- Token Join Input Box -->
+      <div class="input-group" id="joinTokenBox" style="display: none;">
+        <label for="joinTokenInput" class="input-label">Masukkan 6-Digit Token Ruangan</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="joinTokenInput" class="ui-input" placeholder="Contoh: CT-4902" style="font-family: 'JetBrains Mono', monospace; text-transform: uppercase;">
+          <button type="button" class="ui-btn" onclick="joinRoomByToken()">Masuk</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOOR QUIZ MODAL SCREEN -->
+  <div class="modal-backdrop" id="quizModal" style="display: none;">
+    <div class="door-quiz-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="door-badge" id="quizPillarBadge">PILAR 1 • DEKOMPOSISI HOTS</span>
+        <button type="button" class="ui-btn-outline" style="padding: 4px 10px; font-size: 0.75rem;" onclick="closeQuiz()">Tutup (Esc)</button>
+      </div>
+
+      <h2 style="font-size: 1.1rem; font-weight: 800; color: #FFF;" id="quizTitle">Pintu 1: Dekomposisi Sistem e-Commerce</h2>
+      <p style="font-size: 0.85rem; color: var(--muted); line-height: 1.5;" id="quizQuestion">Pertanyaan kuis akan dimuat di sini...</p>
+
+      <div class="quiz-options-grid" id="quizOptions"></div>
+    </div>
+  </div>
+
+  <!-- VICTORY REPORT MODAL SCREEN -->
+  <div class="modal-backdrop" id="victoryModal" style="display: none;">
+    <div class="victory-card">
+      <div style="font-size: 50px;">🏆</div>
+      <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--gold);">PEMBURU HARTA KARUN MASTER ALGORITHM!</h1>
+      <p style="font-size: 0.85rem; color: var(--muted);">Selamat! Tim Anda berhasil mengalahkan penjaga labirin, memecahkan 4 pilar HOTS, dan membuka Peti Harta Karun Utama.</p>
+
+      <table class="stats-table">
+        <thead>
+          <tr>
+            <th>Pemain</th>
+            <th>HP Tersisa</th>
+            <th>Akurasi HOTS</th>
+            <th>Skor</th>
+          </tr>
+        </thead>
+        <tbody id="victoryReportBody"></tbody>
+      </table>
+
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button type="button" class="ui-btn ui-btn-gold" style="flex: 1;" onclick="restartGame()">🔄 Main Lagi (Ke Lobby)</button>
+        <button type="button" class="ui-btn ui-btn-outline" style="flex: 1;" onclick="location.reload()">🚪 Keluar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       1. GAME STATE & MULTIPLAYER PEER NETWORK
+       ============================================================ */
+    const gameState = {
+      player: { name: "Pemain Roblox 1", color: "#EF4444", avatarKey: "red", hp: 100, x: 0, y: 1, z: 28 },
+      roomToken: "CT-4902",
+      isHost: true,
+      keysCollected: { 1: false, 2: false, 3: false, 4: false },
+      activeDoor: null,
+      quizAnswers: { total: 0, correct: 0 },
+      startTime: Date.now()
+    };
+
+    let selectedAvatarColor = "#EF4444";
+    let selectedAvatarKey = "red";
+    let isSprinting = false;
+
+    function selectAvatar(key, color, el) {
+      document.querySelectorAll('.avatar-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedAvatarKey = key;
+      selectedAvatarColor = color;
+    }
+
+    function createRoom() {
+      const name = document.getElementById('playerName').value.trim() || 'Pemain Roblox 1';
+      const token = 'CT-' + Math.floor(1000 + Math.random() * 9000);
+      gameState.player.name = name;
+      gameState.player.color = selectedAvatarColor;
+      gameState.roomToken = token;
+      gameState.isHost = true;
+
+      document.getElementById('hudToken').textContent = token;
+      document.getElementById('lobbyModal').style.display = 'none';
+
+      initNetworkPeer(token);
+      showToast('🏛️ Ruangan Roblox ' + token + ' Berhasil Dibuat!');
+      initAudio();
+    }
+
+    function showJoinInput() {
+      document.getElementById('joinTokenBox').style.display = 'block';
+    }
+
+    function joinRoomByToken() {
+      const name = document.getElementById('playerName').value.trim() || 'Pemain Roblox 2';
+      const token = document.getElementById('joinTokenInput').value.trim().toUpperCase();
+      if (!token) return;
+
+      gameState.player.name = name;
+      gameState.player.color = selectedAvatarColor;
+      gameState.roomToken = token;
+      gameState.isHost = false;
+
+      document.getElementById('hudToken').textContent = token;
+      document.getElementById('lobbyModal').style.display = 'none';
+
+      initNetworkPeer(token);
+      showToast('🔑 Berhasil Gabung Ruangan ' + token);
+      initAudio();
+    }
+
+    function initNetworkPeer(token) {
+      try {
+        const peer = new Peer(token + '-' + Math.floor(Math.random() * 1000));
+        peer.on('open', (id) => console.log('Peer connected:', id));
+      } catch (e) {}
+    }
+
+    function showToast(msg) {
+      const pill = document.getElementById('toastPill');
+      pill.textContent = msg;
+      pill.style.display = 'block';
+      setTimeout(() => pill.style.display = 'none', 3000);
+    }
+
+    function takeDamage(amount) {
+      gameState.player.hp = Math.max(0, gameState.player.hp - amount);
+      document.getElementById('hpBar').style.width = gameState.player.hp + '%';
+      playSfx('wrong');
+      if (gameState.player.hp <= 0) {
+        showToast('💀 HP Habis! Respawn di Posisi Awal...');
+        setTimeout(() => {
+          gameState.player.hp = 100;
+          document.getElementById('hpBar').style.width = '100%';
+          if (playerGroup) playerGroup.position.set(0, 1, 28);
+        }, 1000);
+      }
+    }
+
+    /* ============================================================
+       2. THREE.JS 3D ROBLOX ENVIRONMENT & CHARACTER ENGINE
+       ============================================================ */
+    let scene, camera, renderer, playerGroup, doors = {}, chestMesh;
+    let leftArm, rightArm, leftLeg, rightLeg, swordMesh;
+    let animTime = 0, velocityY = 0, isJumping = false;
+    let enemies = [];
+    const keyState = { w: false, a: false, s: false, d: false, space: false, shift: false };
+
+    function init3D() {
+      const container = document.getElementById('canvas3d');
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x070b14);
+      scene.fog = new THREE.FogExp2(0x070b14, 0.025);
+
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ canvas: container, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0x38bdf8, 0.9);
+      dirLight.position.set(30, 50, 30);
+      dirLight.castShadow = true;
+      scene.add(dirLight);
+
+      // Floor Base
+      const floorGeo = new THREE.PlaneGeometry(80, 80);
+      const floorMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.7 });
+      const floor = new THREE.Mesh(floorGeo, floorMat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      const gridHelper = new THREE.GridHelper(80, 40, 0x38bdf8, 0x1e293b);
+      gridHelper.position.y = 0.01;
+      scene.add(gridHelper);
+
+      // Build Complex Roblox Obby Maze & Temple Structures
+      buildRobloxMazeEnvironment();
+
+      // Build Roblox Character Avatar
+      createRobloxCharacter(selectedAvatarColor);
+
+      // Create Patrol Enemies
+      createPatrolEnemies();
+
+      // Create Golden Treasure Chest
+      createTreasureChest();
+
+      // Input Event Listeners
+      window.addEventListener('resize', onWindowResize);
+      window.addEventListener('keydown', (e) => handleKey(e, true));
+      window.addEventListener('keyup', (e) => handleKey(e, false));
+      window.addEventListener('mousedown', (e) => { if (e.button === 0) triggerAttack(); });
+
+      // Touch Joystick Init
+      initTouchJoystick();
+
+      // Render Loop
+      animate3D();
+    }
+
+    function createRobloxCharacter(colorHex) {
+      if (playerGroup) scene.remove(playerGroup);
+      playerGroup = new THREE.Group();
+
+      const matBody = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.3 });
+      const matSkin = new THREE.MeshStandardMaterial({ color: 0xfde047, roughness: 0.5 }); // Roblox Yellow Skin
+      const matDark = new THREE.MeshStandardMaterial({ color: 0x1e293b });
+
+      // Torso (Blocky Roblox Torso)
+      const torsoGeo = new THREE.BoxGeometry(0.9, 1.1, 0.5);
+      const torso = new THREE.Mesh(torsoGeo, matBody);
+      torso.position.y = 1.15;
+      torso.castShadow = true;
+      playerGroup.add(torso);
+
+      // Head (Roblox Blocky Head)
+      const headGeo = new THREE.BoxGeometry(0.7, 0.7, 0.7);
+      const head = new THREE.Mesh(headGeo, matSkin);
+      head.position.y = 2.05;
+      head.castShadow = true;
+      playerGroup.add(head);
+
+      // Left Arm
+      const armGeo = new THREE.BoxGeometry(0.35, 1.0, 0.35);
+      leftArm = new THREE.Mesh(armGeo, matSkin);
+      leftArm.position.set(-0.68, 1.15, 0);
+      playerGroup.add(leftArm);
+
+      // Right Arm with Sword
+      rightArm = new THREE.Mesh(armGeo, matSkin);
+      rightArm.position.set(0.68, 1.15, 0);
+      playerGroup.add(rightArm);
+
+      // Sword Mesh
+      const swordGeo = new THREE.BoxGeometry(0.1, 1.2, 0.15);
+      const swordMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.6 });
+      swordMesh = new THREE.Mesh(swordGeo, swordMat);
+      swordMesh.position.set(0, -0.4, 0.4);
+      swordMesh.rotation.x = Math.PI / 3;
+      rightArm.add(swordMesh);
+
+      // Left Leg
+      const legGeo = new THREE.BoxGeometry(0.4, 1.0, 0.4);
+      leftLeg = new THREE.Mesh(legGeo, matDark);
+      leftLeg.position.set(-0.23, 0.5, 0);
+      playerGroup.add(leftLeg);
+
+      // Right Leg
+      rightLeg = new THREE.Mesh(legGeo, matDark);
+      rightLeg.position.set(0.23, 0.5, 0);
+      playerGroup.add(rightLeg);
+
+      playerGroup.position.set(0, 0, 28);
+      scene.add(playerGroup);
+    }
+
+    function buildRobloxMazeEnvironment() {
+      const stoneMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 });
+      const pillarMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0284c7, emissiveIntensity: 0.2 });
+
+      // Maze Layout Walls & Elevated Structures
+      const walls = [
+        [-15, 0, 4, 4, 30], [15, 0, 4, 4, 30],
+        [0, -15, 30, 4, 4], [0, 15, 30, 4, 4],
+        [-8, 8, 8, 3, 2], [8, -8, 8, 3, 2],
+        [-6, -6, 2, 3, 10], [6, 6, 2, 3, 10]
+      ];
+
+      walls.forEach(([x, z, w, h, d]) => {
+        const geo = new THREE.BoxGeometry(w, h, d);
+        const mesh = new THREE.Mesh(geo, stoneMat);
+        mesh.position.set(x, h / 2, z);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        scene.add(mesh);
+      });
+
+      // Pillars with Torches
+      const pillars = [[-12, 12], [12, 12], [-12, -12], [12, -12], [0, 18], [0, -18]];
+      pillars.forEach(([px, pz]) => {
+        const pGeo = new THREE.CylinderGeometry(0.8, 1, 5, 8);
+        const pMesh = new THREE.Mesh(pGeo, pillarMat);
+        pMesh.position.set(px, 2.5, pz);
+        scene.add(pMesh);
+
+        const torchLight = new THREE.PointLight(0xf59e0b, 1.5, 10);
+        torchLight.position.set(px, 5.2, pz);
+        scene.add(torchLight);
+      });
+
+      // 4 Pillar Doors
+      createDoor(1, 0, 14, "DEKOMPOSISI", 0x38bdf8);
+      createDoor(2, -14, 0, "PENGENALAN POLA", 0x10b981);
+      createDoor(3, 14, 0, "ABSTRAKSI", 0xf59e0b);
+      createDoor(4, 0, -14, "ALGORITMA", 0xa855f7);
+    }
+
+    function createDoor(id, x, z, label, color) {
+      const group = new THREE.Group();
+      const doorGeo = new THREE.BoxGeometry(3.5, 4, 0.5);
+      const doorMat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.4, roughness: 0.2 });
+      const door = new THREE.Mesh(doorGeo, doorMat);
+      door.position.y = 2;
+      group.add(door);
+
+      group.position.set(x, 0, z);
+      doors[id] = { group, id, x, z, label, opened: false };
+      scene.add(group);
+    }
+
+    function createPatrolEnemies() {
+      const enemyMat = new THREE.MeshStandardMaterial({ color: 0xe11d48, emissive: 0x9f1239, emissiveIntensity: 0.4 });
+      const positions = [[-8, 6], [8, -6], [0, -6]];
+
+      positions.forEach(([ex, ez], i) => {
+        const group = new THREE.Group();
+        const bodyGeo = new THREE.BoxGeometry(0.9, 1.2, 0.5);
+        const body = new THREE.Mesh(bodyGeo, enemyMat);
+        body.position.y = 1.1;
+        group.add(body);
+
+        const headGeo = new THREE.BoxGeometry(0.7, 0.7, 0.7);
+        const head = new THREE.Mesh(headGeo, enemyMat);
+        head.position.y = 2.0;
+        group.add(head);
+
+        group.position.set(ex, 0, ez);
+        enemies.push({ group, startX: ex, startZ: ez, dir: 1, hp: 30, alive: true });
+        scene.add(group);
+      });
+    }
+
+    function createTreasureChest() {
+      const group = new THREE.Group();
+      const baseGeo = new THREE.BoxGeometry(1.8, 1.2, 1.2);
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.9 });
+      const base = new THREE.Mesh(baseGeo, baseMat);
+      base.position.y = 0.6;
+      group.add(base);
+
+      const light = new THREE.PointLight(0xf59e0b, 2.5, 12);
+      light.position.y = 1.8;
+      group.add(light);
+
+      group.position.set(0, 0, 0);
+      chestMesh = group;
+      scene.add(chestMesh);
+    }
+
+    function handleKey(e, isDown) {
+      const k = e.key.toLowerCase();
+      if (k === 'w' || k === 'arrowup') keyState.w = isDown;
+      if (k === 's' || k === 'arrowdown') keyState.s = isDown;
+      if (k === 'a' || k === 'arrowleft') keyState.a = isDown;
+      if (k === 'd' || k === 'arrowright') keyState.d = isDown;
+      if (k === ' ') {
+        if (isDown && !isJumping) triggerJump();
+      }
+      if (e.shiftKey) isSprinting = isDown;
+      if (k === 'f' && isDown) triggerAttack();
+    }
+
+    function triggerJump() {
+      if (!isJumping && playerGroup) {
+        isJumping = true;
+        velocityY = 0.22;
+        playSfx('jump');
+      }
+    }
+
+    function triggerAttack() {
+      if (!playerGroup) return;
+      playSfx('sword');
+
+      // Sword Swing Animation
+      rightArm.rotation.x = -Math.PI / 2;
+      setTimeout(() => { rightArm.rotation.x = 0; }, 250);
+
+      // Check Enemy Hit
+      enemies.forEach(enemy => {
+        if (enemy.alive) {
+          const dist = playerGroup.position.distanceTo(enemy.group.position);
+          if (dist < 2.5) {
+            enemy.hp -= 15;
+            showToast('⚔️ Serangan Memukul Musuh!');
+            if (enemy.hp <= 0) {
+              enemy.alive = false;
+              scene.remove(enemy.group);
+              showToast('💥 Musuh Berhasil Dikalahkan!');
+            }
+          }
+        }
+      });
+    }
+
+    function toggleSprint() {
+      isSprinting = !isSprinting;
+      document.getElementById('sprintBtn').style.borderColor = isSprinting ? '#F59E0B' : 'var(--border)';
+    }
+
+    function animate3D() {
+      requestAnimationFrame(animate3D);
+      animTime += 0.05;
+
+      if (playerGroup) {
+        let speed = isSprinting ? 0.24 : 0.14;
+        let moving = false;
+        let dx = 0, dz = 0;
+
+        if (keyState.w) dz -= speed;
+        if (keyState.s) dz += speed;
+        if (keyState.a) dx -= speed;
+        if (keyState.d) dx += speed;
+
+        if (dx !== 0 || dz !== 0) {
+          moving = true;
+          playerGroup.position.x += dx;
+          playerGroup.position.z += dz;
+          playerGroup.rotation.y = Math.atan2(dx, dz);
+        }
+
+        // Jump & Gravity Physics
+        if (isJumping) {
+          playerGroup.position.y += velocityY;
+          velocityY -= 0.012; // Gravity
+          if (playerGroup.position.y <= 0) {
+            playerGroup.position.y = 0;
+            isJumping = false;
+          }
+        }
+
+        // Roblox Walking Animation
+        if (moving && !isJumping) {
+          const swing = Math.sin(animTime * 12) * 0.6;
+          leftArm.rotation.x = swing;
+          rightArm.rotation.x = -swing;
+          leftLeg.rotation.x = -swing;
+          rightLeg.rotation.x = swing;
+        } else if (!isJumping) {
+          leftArm.rotation.x = rightArm.rotation.x = leftLeg.rotation.x = rightLeg.rotation.x = 0;
+        }
+
+        // Camera Follow
+        camera.position.x = playerGroup.position.x;
+        camera.position.y = playerGroup.position.y + 11;
+        camera.position.z = playerGroup.position.z + 14;
+        camera.lookAt(playerGroup.position);
+
+        // Check Proximity to Doors
+        checkDoorProximity();
+
+        // Enemy Patrol & Collision Check
+        updateEnemies();
+      }
+
+      // Rotate Treasure Light
+      if (chestMesh) chestMesh.rotation.y += 0.01;
+
+      renderer.render(scene, camera);
+    }
+
+    function updateEnemies() {
+      enemies.forEach(enemy => {
+        if (enemy.alive) {
+          enemy.group.position.x += 0.04 * enemy.dir;
+          if (Math.abs(enemy.group.position.x - enemy.startX) > 5) {
+            enemy.dir *= -1;
+          }
+
+          // Damage Player on Contact
+          if (playerGroup && playerGroup.position.distanceTo(enemy.group.position) < 1.4) {
+            takeDamage(2);
+          }
+        }
+      });
+    }
+
+    function checkDoorProximity() {
+      Object.values(doors).forEach(door => {
+        if (!door.opened && playerGroup) {
+          const dist = Math.hypot(playerGroup.position.x - door.x, playerGroup.position.z - door.z);
+          if (dist < 2.8) {
+            openQuizModal(door.id);
+          }
+        }
+      });
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    /* ============================================================
+       3. TOUCH JOYSTICK CONTROLLER
+       ============================================================ */
+    function initTouchJoystick() {
+      const zone = document.getElementById('joystickZone');
+      const knob = document.getElementById('joystickKnob');
+      let active = false, startX = 0, startY = 0;
+
+      zone.addEventListener('touchstart', (e) => {
+        active = true;
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+      });
+
+      zone.addEventListener('touchmove', (e) => {
+        if (!active) return;
+        const touch = e.touches[0];
+        const moveX = touch.clientX - startX;
+        const moveY = touch.clientY - startY;
+
+        keyState.a = moveX < -10;
+        keyState.d = moveX > 10;
+        keyState.w = moveY < -10;
+        keyState.s = moveY > 10;
+
+        knob.style.transform = `translate(${Math.min(Math.max(moveX, -35), 35)}px, ${Math.min(Math.max(moveY, -35), 35)}px)`;
+      });
+
+      zone.addEventListener('touchend', () => {
+        active = false;
+        keyState.w = keyState.a = keyState.s = keyState.d = false;
+        knob.style.transform = 'translate(0px, 0px)';
+      });
+    }
+
+    /* ============================================================
+       4. QUIZ HOTS QUESTIONS WITH TRICKY DISTRACTORS
+       ============================================================ */
+    const QUIZ_DATA = {
+      1: {
+        badge: "PILAR 1 • DEKOMPOSISI HOTS",
+        title: "Pintu 1: Dekomposisi Sistem e-Commerce & Rekomendasi",
+        question: "Kasus HOTS: Tim Anda diminta membangun platform e-Commerce dengan sistem rekomendasi barang otomatis. Urutan dekomposisi modul sistem manakah yang paling akurat?",
+        options: [
+          { text: "A. Pendaftaran Pengguna → Katalog Produk → Keranjang Belanja → Engine Rekomendasi AI → Gateway Pembayaran (Benar & Logis)", correct: true },
+          { text: "B. Engine Rekomendasi AI → Gateway Pembayaran → Pendaftaran Pengguna → Katalog Produk (Pengecoh: Urutan Tanpa Alur Data)", correct: false },
+          { text: "C. Gateway Pembayaran → Pendaftaran Pengguna → Keranjang Belanja (Pengecoh: Terlalu Awal Berorientasi Transaksi)", correct: false },
+          { text: "D. Katalog Produk → Gateway Pembayaran → Pendaftaran Pengguna (Pengecoh: Mengabaikan Modul Rekomendasi)", correct: false }
+        ]
+      },
+      2: {
+        badge: "PILAR 2 • PENGENALAN POLA HOTS",
+        title: "Pintu 2: Pengenalan Pola Matriks Shift Biner",
+        question: "Perhatikan pola transformasi matriks bit berikut: [0010 → 0100], [0100 → 1000], [1000 → 0001]. Jika input selanjutnya adalah [0011], manakah pola output bergeser bit (Bitwise Left Shift 1) yang benar?",
+        options: [
+          { text: "A. [0110] (Bitwise Shift Left 1 dengan Circular Wrap)", correct: true },
+          { text: "B. [1100] (Pengecoh: Shift Left 2 Langkah)", correct: false },
+          { text: "C. [0001] (Pengecoh: Inversi Bit Biner)", correct: false },
+          { text: "D. [1001] (Pengecoh: Operasi Bit XOR)", correct: false }
+        ]
+      },
+      3: {
+        badge: "PILAR 3 • ABSTRAKSI HOTS",
+        title: "Pintu 3: Abstraksi Filter Data Lalulintas Jaringan",
+        question: "Kasus HOTS: Terjadi serangan DDoS pada server sekolah. Untuk mendeteksi serangan, variabel manakah yang WAJIB DIABSTRAKSI (fokus utama) dengan mengabaikan data tak relevan?",
+        options: [
+          { text: "A. Alamat IP Asal, Frekuensi Request per Detik, & Tipe Protocol Header (Benar & Esensial)", correct: true },
+          { text: "B. Warna Browser Pengguna, Ukuran Layar Monitor, & Merk Laptop (Pengecoh: Data Sampah Non-Esensial)", correct: false },
+          { text: "C. Nama Pemilik Laptop, Lokasi Rumah, & Penyedia Listrik (Pengecoh: Variabel Sosial Non-Teknis)", correct: false },
+          { text: "D. Jumlah Huruf Judul Website & Versi Operating System (Pengecoh: Detail Kosmetik)", correct: false }
+        ]
+      },
+      4: {
+        badge: "PILAR 4 • ALGORITMA HOTS",
+        title: "Pintu 4: Tracing Algoritma Pemrograman Blok",
+        question: "Perhatikan pseudocode: 'VAR X=2; REPEAT 3 TIMES { X = X * 2 + 1 }; PRINT X'. Berapakah nilai akhir X yang dicetak?",
+        options: [
+          { text: "A. 23 (Iterasi 1: 5 → Iterasi 2: 11 → Iterasi 3: 23)", correct: true },
+          { text: "B. 15 (Pengecoh: Lupa Iterasi Ketiga)", correct: false },
+          { text: "C. 31 (Pengecoh: Perkalian Salah Hitung)", correct: false },
+          { text: "D. 12 (Pengecoh: Penjumlahan Tanpa Perkalian)", correct: false }
+        ]
+      }
+    };
+
+    function openQuizModal(id) {
+      gameState.activeDoor = id;
+      const quiz = QUIZ_DATA[id];
+      if (!quiz) return;
+
+      document.getElementById('quizPillarBadge').textContent = quiz.badge;
+      document.getElementById('quizTitle').textContent = quiz.title;
+      document.getElementById('quizQuestion').textContent = quiz.question;
+
+      const optsContainer = document.getElementById('quizOptions');
+      optsContainer.innerHTML = '';
+
+      quiz.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'quiz-opt-btn';
+        btn.innerHTML = `<span>${opt.text}</span><span>➔</span>`;
+        btn.onclick = () => handleQuizAnswer(id, opt.correct);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('quizModal').style.display = 'flex';
+    }
+
+    function closeQuiz() {
+      document.getElementById('quizModal').style.display = 'none';
+    }
+
+    function handleQuizAnswer(doorId, isCorrect) {
+      gameState.quizAnswers.total++;
+      if (isCorrect) {
+        gameState.quizAnswers.correct++;
+        gameState.keysCollected[doorId] = true;
+        doors[doorId].opened = true;
+        scene.remove(doors[doorId].group);
+
+        document.getElementById('slot-' + doorId).classList.add('collected');
+        showToast('🔑 Kunci Pilar ' + doorId + ' Berhasil Didapatkan!');
+        playSfx('correct');
+
+        closeQuiz();
+
+        // Check Victory Condition (All 4 keys collected)
+        if (Object.values(gameState.keysCollected).every(k => k)) {
+          setTimeout(triggerVictory, 1000);
+        }
+      } else {
+        takeDamage(15);
+        showToast('❌ Jawaban Salah! Pengecoh Terpilih (-15 HP). Coba Lagi.');
+        playSfx('wrong');
+      }
+    }
+
+    function triggerVictory() {
+      playSfx('win');
+      const acc = Math.round((gameState.quizAnswers.correct / gameState.quizAnswers.total) * 100) || 100;
+
+      const reportBody = document.getElementById('victoryReportBody');
+      reportBody.innerHTML = `
+        <tr>
+          <td><b>${gameState.player.name}</b></td>
+          <td>${gameState.player.hp}% HP</td>
+          <td>${acc}% HOTS</td>
+          <td>1,850 Poin</td>
+        </tr>
+      `;
+
+      document.getElementById('victoryModal').style.display = 'flex';
+    }
+
+    function restartGame() {
+      location.reload();
+    }
+
+    /* ============================================================
+       5. PROCEDURAL WEB AUDIO API SYNTHESIZER
+       ============================================================ */
+    let audioCtx;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playSfx(type) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'jump') {
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } else if (type === 'sword') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.12);
+      } else if (type === 'correct') {
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'win') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.6);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.6);
+      }
+    }
+
+    // Initialize 3D Engine on Load
+    window.addEventListener('DOMContentLoaded', init3D);
+  </script>
+</body>
+</html>
