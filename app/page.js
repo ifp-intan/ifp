@@ -142,77 +142,287 @@ const MATERI_LIST = [
   }
 ];
 
-// Data Kuis Flashcard HOTS IPS Literasi Finansial
+// Data Kuis Flashcard HOTS IPS Literasi Finansial (20 Soal CBT Modul CBP Rupiah)
 const QUIZ_QUESTIONS = [
   {
     id: 1,
-    topic: 'Ciri Keaslian Rupiah',
-    level: 'HOTS (C4 Analisis)',
-    question: 'Kasir toko menerima uang kertas Rupiah emisi baru. Saat memverifikasi dengan teknik 3D (Diraba), kasir merasakan adanya tekstur garis-garis kasar khusus di bagian tepi kanan dan kiri. Fitur tersebut dirancang khusus oleh Bank Indonesia dengan tujuan...',
+    topic: 'Pengelolaan Rupiah (UU 7/2011)',
+    level: 'CBT Soal 1',
+    question: '1. Lembaga yang berwenang mengelola uang Rupiah berdasarkan UU No. 7 Tahun 2011 adalah...',
     options: [
-      { letter: 'A', text: 'Meningkatkan estetika seni lukis gambar pahlawan pada kertas uang.' },
-      { letter: 'B', text: 'Memberikan penanda khusus (Tactile Code) bagi penyandang tunanetra.' },
-      { letter: 'C', text: 'Menandakan bahwa uang tersebut dicetak menggunakan tinta emas murni.' },
-      { letter: 'D', text: 'Menghasilkan bunyi khusus saat uang dikibas-kibaskan di udara.' }
+      { letter: 'A', text: 'Kementerian Keuangan' },
+      { letter: 'B', text: 'Bank Indonesia' },
+      { letter: 'C', text: 'Perum Peruri' },
+      { letter: 'D', text: 'Otoritas Jasa Keuangan' }
     ],
     correct: 'B',
-    explanation: 'Tekstur garis timbul pada bagian tepi uang kertas TE 2022 adalah Tactile Code (Kode Tunanetra) yang dicetak dengan teknik cetak intaglio agar penyandang disabilitas netra dapat mengenali pecahan uang dengan diraba.'
+    explanation: 'Berdasarkan UU No. 7 Tahun 2011 tentang Mata Uang, Bank Indonesia adalah satu-satunya lembaga independen negara yang berwenang mengelola uang Rupiah dari perencanaan hingga pemusnahan.'
   },
   {
     id: 2,
-    topic: 'Sistem Pembayaran QRIS',
-    level: 'HOTS (C5 Evaluasi)',
-    question: 'Sebuah UMKM kuliner beralih dari pembayaran tunai ke sistem QRIS. Setelah 3 bulan, pemilik toko mencatat rekapitulasi penjualan menjadi jauh lebih tertata dan terhindar dari kerugian akibat uang kembalian yang kurang. Evaluasi terbaik mengenai dampak penggunaan QRIS adalah...',
+    topic: 'Tahapan Pembuatan Uang',
+    level: 'CBT Soal 2',
+    question: '2. Berikut yang BUKAN termasuk tahapan resmi dalam proses pembuatan Uang Rupiah adalah...',
     options: [
-      { letter: 'A', text: 'QRIS menaikkan harga jual barang secara otomatis dua kali lipat.' },
-      { letter: 'B', text: 'QRIS meningkatkan efisiensi operasional dan membantu membangun pencatatan transaksi yang transparan.' },
-      { letter: 'C', text: 'QRIS mewajibkan pembeli untuk memiliki rekening bank luar negeri.' },
-      { letter: 'D', text: 'QRIS menghilangkan kebutuhan jaringan internet bagi pedagang dan pembeli.' }
+      { letter: 'A', text: 'Perencanaan Uang' },
+      { letter: 'B', text: 'Pemalsuan Uang' },
+      { letter: 'C', text: 'Pencetakan Uang' },
+      { letter: 'D', text: 'Pemusnahan Uang' }
     ],
     correct: 'B',
-    explanation: 'QRIS memberikan keuntungan transparansi pencatatan transaksi otomatis, mencegah uang kembalian tidak pas/uang palsu, serta membangun riwayat keuangan (credit scoring) UMKM.'
+    explanation: 'Tahapan resmi pengelolaan uang Rupiah oleh Bank Indonesia meliputi Perencanaan, Pencetakan, Pengeluaran, Pengedaran, Pencabutan/Penarikan, dan Pemusnahan. Pemalsuan adalah kejahatan pidana.'
   },
   {
     id: 3,
-    topic: 'Manajemen Keuangan 50/30/20',
-    level: 'HOTS (C6 Kreasi)',
-    question: 'Andi menerima uang saku bulanan sebesar Rp 500.000. Jika Andi menerapkan formula manajemen keuangan rasional 50/30/20, berapakah jumlah alokasi dana maksimal yang seharusnya dia gunakan khusus untuk hobi dan hiburan (Keinginan)?',
+    topic: 'Bahan Baku Rupiah',
+    level: 'CBT Soal 3',
+    question: '3. Bahan utama yang digunakan untuk membuat kertas uang Rupiah adalah...',
     options: [
-      { letter: 'A', text: 'Rp 250.000 (50%)' },
-      { letter: 'B', text: 'Rp 150.000 (30%)' },
-      { letter: 'C', text: 'Rp 100.000 (20%)' },
-      { letter: 'D', text: 'Rp 50.000 (10%)' }
+      { letter: 'A', text: 'Serat kapas murni' },
+      { letter: 'B', text: 'Nilon dan aluminium' },
+      { letter: 'C', text: 'Kertas daur ulang' },
+      { letter: 'D', text: 'Plastik polimer sintetis' }
     ],
-    correct: 'B',
-    explanation: 'Dalam aturan 50/30/20: 50% untuk Kebutuhan Pokok (Rp250.000), 30% untuk Keinginan/Hiburan (30% x Rp500.000 = Rp150.000), dan 20% untuk Tabungan (Rp100.000).'
+    correct: 'A',
+    explanation: 'Kertas uang Rupiah terbuat dari 100% serat kapas murni yang membuat lembaran uang lebih tahan lama, lentur, dan tidak mudah robek dibanding kertas kayu biasa.'
   },
   {
     id: 4,
-    topic: 'Legalitas Investasi OJK',
-    level: 'HOTS (C5 Evaluasi)',
-    question: 'Rina ditawari investasi online yang menjanjikan keuntungan pasti 50% setiap bulan tanpa risiko rugi, serta wajib merekrut 3 anggota baru untuk cair. Berdasarkan prinsip OJK, investasi tersebut dikategorikan sebagai...',
+    topic: 'Pemusnahan Uang WTE',
+    level: 'CBT Soal 4',
+    question: '4. Proses pemusnahan uang Rupiah yang rusak atau tidak layak edar dilakukan oleh Bank Indonesia dengan cara ramah lingkungan yaitu...',
     options: [
-      { letter: 'A', text: 'Investasi Legal karena menjanjikan persentase keuntungan yang terukur.' },
-      { letter: 'B', text: 'Investasi Bodong Skema Ponzi karena tidak logis dan bergantung pada perekrutan anggota baru.' },
-      { letter: 'C', text: 'Surat Berharga Negara (SBN) yang dijamin penuh oleh Bank Indonesia.' },
-      { letter: 'D', text: 'Produk tabungan emas berjangka berizin resmi OJK.' }
+      { letter: 'A', text: 'Dikubur dalam tanah' },
+      { letter: 'B', text: 'Dijual ke masyarakat' },
+      { letter: 'C', text: 'Waste Convert to Energy (WTE)' },
+      { letter: 'D', text: 'Dibakar di tempat terbuka' }
     ],
-    correct: 'B',
-    explanation: 'Skema Ponzi ditandai dengan janji untung besar tanpa risiko (tidak logis) dan kewajiban merekrut anggota baru untuk membayar keuntungan anggota lama.'
+    correct: 'C',
+    explanation: 'BI menerapkan teknologi Waste Convert to Energy (WTE) untuk mengolah limbah racikan uang kertas rusak menjadi energi alternatif yang bermanfaat.'
   },
   {
     id: 5,
-    topic: 'Cinta Bangga Paham Rupiah',
-    level: 'HOTS (C4 Analisis)',
-    question: 'Di sebuah destinasi wisata lokal, pengelola mewajibkan wisatawan membayar tiket menggunakan mata uang asing dan menolak Rupiah. Berdasarkan UU No. 7 Tahun 2011 tentang Mata Uang, tindakan pengelola tersebut...',
+    topic: 'Modul 1 Cinta Rupiah',
+    level: 'CBT Soal 5',
+    question: '5. Tema utama Modul 1 "Cinta Rupiah" adalah...',
     options: [
-      { letter: 'A', text: 'Dibenarkan demi meningkatkan pendapatan devisa sektor pariwisata.' },
-      { letter: 'B', text: 'Melanggar hukum karena menolak Rupiah sebagai alat pembayaran sah di wilayah NKRI.' },
-      { letter: 'C', text: 'Sah selama disepakati bersama oleh pengelola dan wisatawan.' },
-      { letter: 'D', text: 'Boleh dilakukan khusus untuk transaksi di atas Rp 10.000.000.' }
+      { letter: 'A', text: 'Tak Kenal, Maka Tak Sayang' },
+      { letter: 'B', text: 'Bangga Menggunakan Rupiah' },
+      { letter: 'C', text: 'Bijak Bertransaksi' },
+      { letter: 'D', text: 'Rupiah Pemersatu Bangsa' }
+    ],
+    correct: 'A',
+    explanation: 'Tema Modul 1 Cinta Rupiah mengusung pesan "Tak Kenal, Maka Tak Sayang" yang mengajak masyarakat mengenali keaslian dan merawat fisik Rupiah.'
+  },
+  {
+    id: 6,
+    topic: 'Metode 3D Keaslian',
+    level: 'CBT Soal 6',
+    question: '6. Metode utama yang digunakan masyarakat untuk mengenali ciri keaslian uang kertas Rupiah adalah...',
+    options: [
+      { letter: 'A', text: '3M (Melihat, Meraba, Merasakan)' },
+      { letter: 'B', text: '3C (Cek, Cocokkan, Catat)' },
+      { letter: 'C', text: '3P (Periksa, Pastikan, Pegang)' },
+      { letter: 'D', text: '3D (Dilihat, Diraba, Diterawang)' }
+    ],
+    correct: 'D',
+    explanation: 'Metode 3D (Dilihat warna dan benang pengamannya, Diraba tekstur cetak timbul intaglio, Diterawang tanda air watermark-nya) adalah panduan praktis dari BI.'
+  },
+  {
+    id: 7,
+    topic: 'Merawat Rupiah (5-Jangan)',
+    level: 'CBT Soal 7',
+    question: '7. Berikut adalah cara yang benar dalam merawat fisik uang Rupiah, KECUALI...',
+    options: [
+      { letter: 'A', text: 'Menyimpan uang di dompet rapi' },
+      { letter: 'B', text: 'Melipat uang hingga kusam & kusut' },
+      { letter: 'C', text: 'Tidak mencoret-coret lembaran uang' },
+      { letter: 'D', text: 'Tidak membasahi atau menstapler uang' }
     ],
     correct: 'B',
-    explanation: 'Sesuai UU No. 7 Tahun 2011 tentang Mata Uang, Rupiah adalah satu-satunya alat pembayaran yang sah di seluruh Wilayah NKRI dan wajib digunakan dalam setiap transaksi.'
+    explanation: 'Prinsip 5-Jangan merawat Rupiah: Jangan Dilipat, Jangan Diremas, Jangan Dicoret, Jangan Dibasahi, dan Jangan Distapler.'
+  },
+  {
+    id: 8,
+    topic: 'Strategi Preemptif BI',
+    level: 'CBT Soal 8',
+    question: '8. Strategi Bank Indonesia untuk mencegah peredaran uang palsu melalui sosialisasi dan edukasi masyarakat disebut...',
+    options: [
+      { letter: 'A', text: 'Strategi Preventif' },
+      { letter: 'B', text: 'Strategi Represif' },
+      { letter: 'C', text: 'Strategi Preemptif' },
+      { letter: 'D', text: 'Strategi Kuratif' }
+    ],
+    correct: 'C',
+    explanation: 'Strategi Preemptif mengandalkan edukasi dan peningkatan pemahaman masyarakat mengenai Ciri Keaslian Uang Rupiah sejak dini.'
+  },
+  {
+    id: 9,
+    topic: 'Strategi Represif BI',
+    level: 'CBT Soal 9',
+    question: '9. Sanksi pidana tegas dan penegakan hukum bagi pelaku pemalsuan uang merupakan bagian dari strategi...',
+    options: [
+      { letter: 'A', text: 'Strategi Preemptif' },
+      { letter: 'B', text: 'Strategi Preventif' },
+      { letter: 'C', text: 'Strategi Represif' },
+      { letter: 'D', text: 'Strategi Edukatif' }
+    ],
+    correct: 'C',
+    explanation: 'Strategi Represif adalah tindakan penegakan hukum bekerjasama dengan kepolisian dan peradilan untuk menindak pidana uang palsu.'
+  },
+  {
+    id: 10,
+    topic: 'Simbol Kedaulatan NKRI',
+    level: 'CBT Soal 10',
+    question: '10. Makna utama dari Rupiah sebagai simbol kedaulatan Negara Kesatuan Republik Indonesia berarti...',
+    options: [
+      { letter: 'A', text: 'Rupiah dapat digunakan secara bebas di seluruh dunia' },
+      { letter: 'B', text: 'Rupiah dapat ditukar dengan mata uang asing tanpa batasan' },
+      { letter: 'C', text: 'Rupiah adalah mata uang dengan nilai tertinggi di dunia' },
+      { letter: 'D', text: 'Rupiah wajib digunakan sebagai alat pembayaran di seluruh wilayah NKRI' }
+    ],
+    correct: 'D',
+    explanation: 'Rupiah merupakan simbol kedaulatan NKRI sehingga setiap transaksi pembayaran di seluruh wilayah Indonesia wajib menggunakan Rupiah.'
+  },
+  {
+    id: 11,
+    topic: 'Dasar Hukum Rupiah',
+    level: 'CBT Soal 11',
+    question: '11. Landasan dan dasar hukum utama yang menetapkan Rupiah sebagai alat pembayaran yang sah di NKRI adalah...',
+    options: [
+      { letter: 'A', text: 'UUD 1945 Pasal 23B dan UU No. 7 Tahun 2011' },
+      { letter: 'B', text: 'UUD 1945 Pasal 33 dan UU No. 2 Tahun 2008' },
+      { letter: 'C', text: 'UU No. 7 Tahun 2011 dan UU No. 2 Tahun 2008' },
+      { letter: 'D', text: 'UUD 1945 Pasal 23 dan UU No. 7 Tahun 2011' }
+    ],
+    correct: 'A',
+    explanation: 'Pasal 23B UUD 1945 dan UU No. 7 Tahun 2011 tentang Mata Uang mengamanatkan Rupiah sebagai mata uang resmi dan tunggal di Indonesia.'
+  },
+  {
+    id: 12,
+    topic: 'One Nation One Currency',
+    level: 'CBT Soal 12',
+    question: '12. Meskipun Indonesia memiliki keberagaman suku dan budaya, Rupiah menjadi alat pemersatu bangsa melalui konsep...',
+    options: [
+      { letter: 'A', text: 'One Currency One World' },
+      { letter: 'B', text: 'Unity in Financial Diversity' },
+      { letter: 'C', text: 'Global Currency Standard' },
+      { letter: 'D', text: 'One Nation One Currency' }
+    ],
+    correct: 'D',
+    explanation: 'Konsep "One Nation One Currency" menegaskan bahwa Rupiah mempersatukan perekonomian seluruh rakyat Indonesia dari Sabang sampai Merauke.'
+  },
+  {
+    id: 13,
+    topic: 'Modul 3 Paham Rupiah',
+    level: 'CBT Soal 13',
+    question: '13. Pembelajaran utama dalam Modul 3 "Paham Rupiah" mengajarkan masyarakat untuk...',
+    options: [
+      { letter: 'A', text: 'Menimbun uang tunai di rumah tanpa investasi' },
+      { letter: 'B', text: 'Menggunakan mata uang asing untuk transaksi harian' },
+      { letter: 'C', text: 'Menghindari pemanfaatan perbankan resmi' },
+      { letter: 'D', text: 'Bijak bertransaksi, berbelanja, dan berinvestasi' }
+    ],
+    correct: 'D',
+    explanation: 'Paham Rupiah tercermin dalam perilaku bijak bertransaksi (nontunai/QRIS), hemat berbelanja sesuai kebutuhan, serta rutin menabung dan berinvestasi.'
+  },
+  {
+    id: 14,
+    topic: 'Fungsi Uang Pembayaran',
+    level: 'CBT Soal 14',
+    question: '14. Salah satu fungsi utama uang yang hadir untuk menggantikan keterbatasan sistem barter adalah...',
+    options: [
+      { letter: 'A', text: 'Satuan hitung kekayaan' },
+      { letter: 'B', text: 'Alat pembayaran yang sah' },
+      { letter: 'C', text: 'Alat penyimpan nilai masa depan' },
+      { letter: 'D', text: 'Instrumen spekulasi keuangan' }
+    ],
+    correct: 'B',
+    explanation: 'Uang mengatasi kelemahan sistem barter (double coincidence of wants) dengan bertindak sebagai alat pembayaran/penukar umum yang sah.'
+  },
+  {
+    id: 15,
+    topic: 'Keamanan Digital (Phishing)',
+    level: 'CBT Soal 15',
+    question: '15. Kejahatan siber finansial yang dilakukan dengan teknik pengelabuan melalui tautan, pesan, atau email palsu disebut...',
+    options: [
+      { letter: 'A', text: 'Skimming' },
+      { letter: 'B', text: 'Hacking' },
+      { letter: 'C', text: 'Phishing' },
+      { letter: 'D', text: 'Malware' }
+    ],
+    correct: 'C',
+    explanation: 'Phishing adalah teknik penipuan online yang memancing korban memberikan data rahasia (PIN/OTP/password) melalui situs atau pesan tiruan.'
+  },
+  {
+    id: 16,
+    topic: 'Layanan BICARA 131',
+    level: 'CBT Soal 16',
+    question: '16. Layanan resmi pengaduan dan informasi konsumen Bank Indonesia dapat dihubungi melalui...',
+    options: [
+      { letter: 'A', text: 'BICARA 131' },
+      { letter: 'B', text: 'Call Center 1500' },
+      { letter: 'C', text: 'Kontak OJK 157' },
+      { letter: 'D', text: 'Kemendag Call 123' }
+    ],
+    correct: 'A',
+    explanation: 'BICARA 131 (telepon 131 / email bicara@bi.go.id) adalah pusat kontak resmi Bank Indonesia untuk melayani informasi dan pengaduan masyarakat.'
+  },
+  {
+    id: 17,
+    topic: 'Dana Pihak Ketiga (DPK)',
+    level: 'CBT Soal 17',
+    question: '17. Dana Pihak Ketiga (DPK) yang disimpan masyarakat di lembaga perbankan berperan sangat penting karena...',
+    options: [
+      { letter: 'A', text: 'Membantu bank menyalurkan kredit dan menjaga stabilitas keuangan nasional' },
+      { letter: 'B', text: 'Secara langsung meningkatkan harga barang kebutuhan pokok' },
+      { letter: 'C', text: 'Mengurangi secara drastis jumlah uang yang beredar di pasar' },
+      { letter: 'D', text: 'Menurunkan nilai suku bunga acuan pasar uang' }
+    ],
+    correct: 'A',
+    explanation: 'DPK (tabungan, deposito, giro) menjadi modal utama bank untuk menyalurkan pembiayaan kredit produktif ke sektor riil UMKM dan industri.'
+  },
+  {
+    id: 18,
+    topic: 'Profil Investor Moderat',
+    level: 'CBT Soal 18',
+    question: '18. Tipe investor yang siap menghadapi risiko jangka pendek namun tetap berhati-hati terhadap fluktuasi instrumen investasi disebut investor...',
+    options: [
+      { letter: 'A', text: 'Investor Konservatif' },
+      { letter: 'B', text: 'Investor Moderat' },
+      { letter: 'C', text: 'Investor Agresif' },
+      { letter: 'D', text: 'Investor Spekulatif' }
+    ],
+    correct: 'B',
+    explanation: 'Investor Moderat menyeimbangkan antara potensi keuntungan dan risiko menengah, seperti memilih obligasi pemerintah dan reksadana campuran.'
+  },
+  {
+    id: 19,
+    topic: 'Literasi Keuangan',
+    level: 'CBT Soal 19',
+    question: '19. Kunci utama dalam mengelola keuangan pribadi agar kebutuhan esensial tercukupi dan terhindar dari risiko finansial adalah...',
+    options: [
+      { letter: 'A', text: 'Menggunakan fasilitas pinjaman online secara terus-menerus' },
+      { letter: 'B', text: 'Menabung seluruh pendapatan di celengan rumah tanpa perbankan' },
+      { letter: 'C', text: 'Melakukan investasi berisiko tinggi tanpa pengetahuan legalitas' },
+      { letter: 'D', text: 'Memiliki Literasi Keuangan yang baik' }
+    ],
+    correct: 'D',
+    explanation: 'Literasi Keuangan mencakup pengetahuan, keterampilan, dan keyakinan dalam mengelola uang, menyusun anggaran, serta memilih produk jasa keuangan.'
+  },
+  {
+    id: 20,
+    topic: 'Tujuan Paham Rupiah',
+    level: 'CBT Soal 20',
+    question: '20. Makna utama dan tujuan akhir dari perilaku "Paham Rupiah" bagi setiap warga negara adalah...',
+    options: [
+      { letter: 'A', text: 'Mencintai produk buatan dalam negeri secara eksklusif' },
+      { letter: 'B', text: 'Mempertahankan kedaulatan wilayah perbatasan negara' },
+      { letter: 'C', text: 'Bersama Mewujudkan Stabilitas dan Kesejahteraan Negara' },
+      { letter: 'D', text: 'Menggunakan valuta asing dalam setiap transaksi komersial' }
+    ],
+    correct: 'C',
+    explanation: 'Cita-cita Paham Rupiah adalah agar setiap elemen masyarakat dapat bersama-sama mendukung stabilitas nilai tukar dan pertumbuhan ekonomi kesejahteraan NKRI.'
   }
 ];
 
@@ -315,7 +525,7 @@ export default function Home() {
     setSelectedAnswer(letter);
     setShowExplanation(true);
     if (letter === QUIZ_QUESTIONS[quizIndex].correct) {
-      setScore(prev => prev + 20);
+      setScore(prev => prev + 5);
     }
   };
 
