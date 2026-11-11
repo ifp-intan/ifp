@@ -1008,16 +1008,83 @@ body, html {
   font-style: italic;
 }
 
-/* Responsive Breakpoints */
+/* Responsive Breakpoints & Mobile (HP) Optimizations */
 @media (max-width: 1024px) {
   .materi-grid { grid-template-columns: repeat(2, 1fr); }
   .guide-grid { grid-template-columns: 1fr; }
+  .iframe-viewport { height: 680px; }
 }
 
 @media (max-width: 768px) {
-  .showcase-grid { grid-template-columns: 1fr; }
-  .materi-grid { grid-template-columns: 1fr; }
-  .header-inner { flex-direction: column; align-items: flex-start; }
-  .nav-tabs { width: 100%; overflow-x: auto; padding-bottom: 4px; }
-  .iframe-viewport { height: 480px; }
+  .site-header { padding: 12px 16px; }
+  .header-inner { flex-direction: column; align-items: stretch; gap: 12px; }
+  .brand-group { justify-content: flex-start; gap: 10px; }
+  .brand-logo { width: 36px; height: 36px; font-size: 18px; border-radius: 10px; }
+  .brand-title { font-size: 1rem; }
+  .brand-sub { font-size: 0.7rem; }
+
+  .nav-tabs {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn { flex-shrink: 0; padding: 8px 14px; font-size: 0.8rem; border-radius: 10px; gap: 6px; }
+
+  .main-container { margin: 16px auto; padding: 0 14px; gap: 18px; }
+  .showcase-grid { grid-template-columns: 1fr; gap: 14px; }
+  .showcase-card { padding: 18px; gap: 12px; border-radius: 16px; }
+  .card-title { font-size: 1.05rem; }
+  .card-desc { font-size: 0.82rem; line-height: 1.45; }
+
+  .console-box { border-radius: 16px; }
+  .console-bar { padding: 10px 14px; gap: 10px; flex-direction: column; align-items: stretch; }
+  .console-actions { width: 100%; justify-content: space-between; }
+  .console-btn { padding: 6px 10px; font-size: 0.75rem; flex: 1; justify-content: center; }
+
+  .iframe-viewport { height: clamp(480px, 68vh, 600px); }
+
+  /* Slide Presenter Mobile */
+  .slide-presenter-card { padding: 12px; border-radius: 16px; gap: 12px; }
+  .slide-control-bar { padding: 10px 14px; flex-direction: column; align-items: stretch; gap: 10px; }
+  .slide-counter-badge { text-align: center; }
+  .slide-arrow-btn { width: 38px; height: 38px; }
+  .slide-arrow-btn.arrow-left { left: 8px; }
+  .slide-arrow-btn.arrow-right { right: 8px; }
+  .slide-thumb-item { min-width: 110px; height: 65px; border-radius: 8px; }
+
+  /* Modul Materi Mobile */
+  .materi-header-bar { padding: 16px; flex-direction: column; align-items: stretch; gap: 12px; }
+  .search-box { min-width: 100%; width: 100%; }
+  .materi-grid { grid-template-columns: 1fr; gap: 14px; }
+  .materi-card { padding: 18px; border-radius: 16px; gap: 12px; }
+
+  /* Kuis Flashcard Mobile */
+  .quiz-header-bar { padding: 16px; flex-direction: column; align-items: stretch; gap: 12px; }
+  .quiz-card { padding: 20px 16px; border-radius: 16px; gap: 18px; }
+  .quiz-question-text { font-size: 1rem; line-height: 1.5; }
+  .option-btn { padding: 12px 14px; font-size: 0.85rem; gap: 10px; border-radius: 12px; }
+  .opt-letter { width: 28px; height: 28px; font-size: 0.8rem; border-radius: 6px; }
+
+  /* Modal Mobile */
+  .modal-backdrop { padding: 12px; }
+  .modal-content { border-radius: 18px; max-height: 90vh; }
+  .modal-header { padding: 16px; }
+  .modal-body { padding: 16px; gap: 14px; }
+  .poin-item { padding: 12px; gap: 10px; border-radius: 12px; }
+  .poin-title { font-size: 0.88rem; }
+  .poin-desc { font-size: 0.8rem; }
+}
+
+@media (max-width: 480px) {
+  .site-header { padding: 10px 12px; }
+  .main-container { padding: 0 10px; }
+  .iframe-viewport { height: 520px; }
+  .section-title { font-size: 1.25rem; }
+  .section-sub { font-size: 0.8rem; }
 }

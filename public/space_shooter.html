@@ -238,12 +238,12 @@
     .flight-alert-title { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 900; letter-spacing: 3px; }
     .flight-alert-sub { font-family: var(--font-tech); font-size: 0.95rem; color: #cbd5e1; margin-top: 4px; letter-spacing: 1px; }
 
-    .cockpit-dock { min-height: 380px; height: 45vh; max-height: 480px; background: rgba(5, 9, 24, 0.98); border-top: 2px solid var(--border-hud); display: grid; gap: 8px; padding: 8px 10px; flex-shrink: 0; z-index: 20; box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.85); }
+    .cockpit-dock { min-height: 360px; height: auto; max-height: 520px; overflow-y: auto; background: rgba(5, 9, 24, 0.98); border-top: 2px solid var(--border-hud); display: grid; gap: 10px; padding: 10px 12px; flex-shrink: 0; z-index: 20; box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.85); }
     .cockpit-dock.teams-2 { grid-template-columns: repeat(2, 1fr); }
-    .cockpit-dock.teams-3 { grid-template-columns: repeat(3, 1fr); }
-    .cockpit-dock.teams-4 { grid-template-columns: repeat(4, 1fr); }
+    .cockpit-dock.teams-3 { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+    .cockpit-dock.teams-4 { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
 
-    .station-panel { background: rgba(11, 17, 40, 0.85); border: 1.5px solid; border-radius: 14px; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; position: relative; transition: border-color 0.2s, box-shadow 0.2s; }
+    .station-panel { background: rgba(11, 17, 40, 0.88); border: 1.5px solid; border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; position: relative; transition: border-color 0.2s, box-shadow 0.2s; min-width: 0; }
     .station-panel.p0 { border-color: rgba(0, 240, 255, 0.45); }
     .station-panel.p1 { border-color: rgba(255, 23, 68, 0.45); }
     .station-panel.p2 { border-color: rgba(255, 214, 0, 0.45); }
@@ -254,30 +254,36 @@
     @keyframes pulseFire { 0%, 100% { background: rgba(11, 17, 40, 0.85); } 50% { background: rgba(0, 230, 118, 0.35); } }
     @keyframes pulseMiss { 0%, 100% { background: rgba(11, 17, 40, 0.85); } 50% { background: rgba(255, 23, 68, 0.35); } }
 
-    .cockpit-header { padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(0, 0, 0, 0.3); }
+    .cockpit-header { padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(0, 0, 0, 0.35); }
     .squadron-tag { display: flex; align-items: center; gap: 6px; }
-    .squadron-name { font-family: var(--font-display); font-size: 0.85rem; font-weight: 800; letter-spacing: 0.5px; }
-    .squadron-class-label { font-family: var(--font-mono); font-size: 0.65rem; color: #94a3b8; }
-    .cockpit-stats { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.78rem; }
+    .squadron-name { font-family: var(--font-display); font-size: 0.9rem; font-weight: 800; letter-spacing: 0.5px; }
+    .squadron-class-label { font-family: var(--font-mono); font-size: 0.68rem; color: #94a3b8; }
+    .cockpit-stats { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.8rem; }
     .stats-score { font-weight: 800; }
     .stats-streak { color: #ffd600; font-weight: 800; }
 
     .radar-timer-track { height: 4px; background: rgba(15, 23, 42, 0.9); width: 100%; overflow: hidden; }
     .radar-timer-fill { height: 100%; width: 100%; background: #00f0ff; transition: width 0.1s linear, background-color 0.25s ease; }
 
-    .cockpit-deck { padding: 8px 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; overflow: hidden; }
+    .cockpit-deck { padding: 10px 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; overflow: hidden; }
     .avionics-meta-row { display: flex; align-items: center; justify-content: space-between; }
-    .topic-badge { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; color: #00f0ff; text-transform: uppercase; letter-spacing: 0.8px; }
-    .weapon-ready-tag { font-family: var(--font-mono); font-size: 0.65rem; color: #ffd600; }
+    .topic-badge { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; color: #00f0ff; text-transform: uppercase; letter-spacing: 0.8px; }
+    .weapon-ready-tag { font-family: var(--font-mono); font-size: 0.68rem; color: #ffd600; }
 
-    .cockpit-question { font-size: clamp(0.7rem, 0.92vw, 0.82rem); font-weight: 700; line-height: 1.3; color: #f8fafc; flex: 1; display: flex; align-items: flex-start; overflow-y: auto; max-height: 120px; padding-right: 2px; }
+    .cockpit-question { font-size: clamp(0.76rem, 1vw, 0.88rem); font-weight: 700; line-height: 1.4; color: #f8fafc; flex: 1; display: flex; align-items: flex-start; overflow-y: auto; max-height: 100px; padding-right: 2px; }
 
-    .fire-options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex-shrink: 0; }
+    .fire-options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px; flex-shrink: 0; }
     .fire-btn {
       background: rgba(16, 24, 56, 0.88); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 8px;
-      padding: 6px 8px; color: #e2e8f0; font-family: var(--font-hud); font-size: clamp(0.65rem, 0.85vw, 0.78rem);
-      font-weight: 600; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 6px;
-      transition: all 0.15s ease; touch-action: manipulation; min-height: 48px; line-height: 1.25;
+      padding: 8px 10px; color: #e2e8f0; font-family: var(--font-hud); font-size: clamp(0.7rem, 0.9vw, 0.82rem);
+      font-weight: 600; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px;
+      transition: all 0.15s ease; touch-action: manipulation; min-height: 48px; line-height: 1.3;
+    }
+    .fire-btn:hover { background: rgba(0, 240, 255, 0.18); border-color: #00f0ff; color: #ffffff; transform: translateY(-1px); }
+    .fire-btn .fire-key { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 2px 6px; flex-shrink: 0; }
+    .fire-btn.locked { pointer-events: none; opacity: 0.6; }
+    .fire-btn.hit { background: rgba(0, 230, 118, 0.35) !important; border-color: #00e676 !important; color: #ffffff !important; box-shadow: 0 0 14px rgba(0, 230, 118, 0.6); }
+    .fire-btn.miss { background: rgba(255, 23, 68, 0.35) !important; border-color: #ff1744 !important; color: #ffffff !important; box-shadow: 0 0 14px rgba(255, 23, 68, 0.6); }
     }
     .fire-btn:hover { background: rgba(0, 240, 255, 0.18); border-color: #00f0ff; color: #ffffff; transform: translateY(-1px); }
     .fire-btn .fire-key { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 2px 5px; flex-shrink: 0; }
@@ -301,6 +307,29 @@
 
     .play-again-btn { background: linear-gradient(135deg, #00f0ff 0%, #0077b6 100%); color: #030611; border: none; border-radius: 14px; padding: 14px 28px; font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; letter-spacing: 2px; cursor: pointer; align-self: center; box-shadow: 0 0 25px rgba(0, 240, 255, 0.5); transition: all 0.2s; }
     .play-again-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 0 40px rgba(0, 240, 255, 0.8); }
+
+    /* Mobile (HP) Responsive Breakpoints */
+    @media (max-width: 768px) {
+      .top-avionics { height: auto; padding: 8px 12px; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+      .telemetry-left { min-width: auto; }
+      .telemetry-center { max-width: 100%; order: 3; flex-basis: 100%; }
+
+      .cockpit-dock { min-height: 280px; height: auto; max-height: 52vh; }
+      .cockpit-dock.teams-3, .cockpit-dock.teams-4 { grid-template-columns: repeat(2, 1fr) !important; }
+
+      .grid-3col { grid-template-columns: 1fr; }
+      .squadrons-grid { grid-template-columns: repeat(2, 1fr); }
+      .setup-title { font-size: 1.8rem; }
+      .hangar-card { padding: 18px; gap: 14px; }
+    }
+
+    @media (max-width: 480px) {
+      .cockpit-dock.teams-2, .cockpit-dock.teams-3, .cockpit-dock.teams-4 { grid-template-columns: 1fr !important; }
+      .squadrons-grid { grid-template-columns: 1fr; }
+      .fire-options-grid { grid-template-columns: 1fr; }
+      .fire-btn { min-height: 42px; font-size: 0.75rem; }
+      .cockpit-question { font-size: 0.78rem; max-height: 90px; }
+    }
   </style>
 </head>
 <body>
